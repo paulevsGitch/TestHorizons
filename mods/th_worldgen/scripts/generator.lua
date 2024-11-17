@@ -153,6 +153,7 @@ end
 
 local function generate_terrain()
 	local stone_id = core.get_content_id("th_overworld:stone")
+	local water_id = core.get_content_id("th_overworld:water_source")
 
 	for _, index in ipairs(index_table) do
 		local index_dec = index - 1
@@ -166,6 +167,8 @@ local function generate_terrain()
 
 		if (cell_1 + cell_2) * 0.5 > 0.0 then
 			node_data[index] = stone_id
+		elseif y + emin.y < 0 then
+			node_data[index] = water_id
 		end
 	end
 end
@@ -179,4 +182,5 @@ core.register_on_generated(function(minp, maxp, blockseed)
 	generate_terrain()
 	vm:set_data(node_data)
 	vm:set_param2_data(param2_data)
+	vm:calc_lighting()
 end)

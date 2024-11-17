@@ -1,7 +1,8 @@
-TH_OVERWORLD = {}
+THOverworld = {}
 
 local path = core.get_modpath("th_overworld")
-TH_OVERWORLD.TRANSLATOR = core.get_translator("th_overworld")
+THOverworld.translate = core.get_translator("th_overworld")
 
 dofile(path .. "/scripts/stones.lua")
+dofile(path .. "/scripts/fluids.lua")
 dofile(path .. "/scripts/world.lua")

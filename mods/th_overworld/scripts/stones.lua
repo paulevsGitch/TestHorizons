@@ -1,4 +1,4 @@
-local translate = TH_OVERWORLD.TRANSLATOR
+local translate = THOverworld.translate
 
 core.register_node("th_overworld:stone", {
 	description = translate("Stone"),

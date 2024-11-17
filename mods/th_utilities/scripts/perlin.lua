@@ -1,4 +1,4 @@
-perlin = {}
+Perlin = {}
 
 local rand_const = vector.new(17.0, 59.4, 15.0)
 
@@ -17,7 +17,7 @@ local function fill_vector(pos, x, y, z)
 	random3(pos, pos)
 end
 
-perlin.new = function (seed)
+Perlin.new = function(seed)
 	local noise = {}
 	local lastPos = vector.new(-640000, -640000, -640000)
 

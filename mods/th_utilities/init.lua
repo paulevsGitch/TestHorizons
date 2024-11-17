@@ -4,7 +4,8 @@ local scripts = {
 	path .. "/scripts/tables.lua",
 	path .. "/scripts/vectors.lua",
 	path .. "/scripts/math.lua",
-	path .. "/scripts/perlin.lua"
+	path .. "/scripts/perlin.lua",
+	path .. "/scripts/voronoi.lua"
 }
 
 for _, script in ipairs(scripts) do
