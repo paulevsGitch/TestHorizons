@@ -1,7 +1,7 @@
 -- creative/inventory.lua
 
 -- support for MT game translation.
-local S = creative.get_translator
+local S = Creative.get_translator
 
 local player_inventory = {}
 local inventory_cache = {}
@@ -20,7 +20,7 @@ local function init_creative_cache(items)
 	return i_cache
 end
 
-function creative.init_creative_inventory(player)
+function Creative.init_creative_inventory(player)
 	local player_name = player:get_player_name()
 	player_inventory[player_name] = {
 		size = 0,
@@ -77,9 +77,9 @@ local function description(def, lang_code)
 	return s:gsub("\n.*", "") -- First line only
 end
 
-function creative.update_creative_inventory(player_name, tab_content)
+function Creative.update_creative_inventory(player_name, tab_content)
 	local inv = player_inventory[player_name] or
-			creative.init_creative_inventory(core.get_player_by_name(player_name))
+			Creative.init_creative_inventory(core.get_player_by_name(player_name))
 	local player_inv = core.get_inventory({type = "detached", name = "creative_" .. player_name})
 
 	if inv.filter == inv.old_filter and tab_content == inv.old_content then
@@ -134,9 +134,9 @@ local trash = core.create_detached_inventory("trash", {
 })
 trash:set_size("main", 1)
 
-creative.formspec_add = ""
+Creative.formspec_add = ""
 
-function creative.register_tab(name, title, items)
+function Creative.register_tab(name, title, items)
 	sfinv.register_page("creative:" .. name, {
 		title = title,
 		is_in_nav = function(self, player, context)
@@ -144,7 +144,7 @@ function creative.register_tab(name, title, items)
 		end,
 		get = function(self, player, context)
 			local player_name = player:get_player_name()
-			creative.update_creative_inventory(player_name, items)
+			Creative.update_creative_inventory(player_name, items)
 			local inv = player_inventory[player_name]
 			local pagenum = math.floor(inv.start_i / (4*8) + 1)
 			local pagemax = math.max(math.ceil(inv.size / (4*8)), 1)
@@ -172,7 +172,7 @@ function creative.register_tab(name, title, items)
 				"field[0.3,4.2;2.8,1.2;creative_filter;;" .. esc(inv.filter) .. "]" ..
 				"listring[detached:creative_" .. player_name .. ";main]" ..
 				"list[detached:creative_" .. player_name .. ";main;0,0;8,4;" .. tostring(inv.start_i) .. "]" ..
-				creative.formspec_add, true)
+				Creative.formspec_add, true)
 		end,
 		on_enter = function(self, player, context)
 			local player_name = player:get_player_name()
@@ -243,10 +243,10 @@ core.register_on_mods_loaded(function()
 	end
 end)
 
-creative.register_tab("all", S("All"), core.registered_items)
-creative.register_tab("nodes", S("Nodes"), registered_nodes)
-creative.register_tab("tools", S("Tools"), registered_tools)
-creative.register_tab("craftitems", S("Items"), registered_craftitems)
+Creative.register_tab("all", S("All"), core.registered_items)
+Creative.register_tab("nodes", S("Nodes"), registered_nodes)
+Creative.register_tab("tools", S("Tools"), registered_tools)
+Creative.register_tab("craftitems", S("Items"), registered_craftitems)
 
 local old_homepage_name = sfinv.get_homepage_name
 function sfinv.get_homepage_name(player)

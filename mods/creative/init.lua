@@ -3,8 +3,8 @@
 -- Load support for MT game translation.
 local S = core.get_translator("creative")
 
-creative = {}
-creative.get_translator = S
+Creative = {}
+Creative.get_translator = S
 
 local function update_sfinv(name)
 	core.after(0, function()
@@ -39,7 +39,7 @@ function core.is_creative_enabled(name)
 end
 
 -- For backwards compatibility:
-function creative.is_enabled_for(name)
+function Creative.is_enabled_for(name)
 	return core.is_creative_enabled(name)
 end
 
