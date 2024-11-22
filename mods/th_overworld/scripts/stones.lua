@@ -6,4 +6,13 @@ core.register_node("th_overworld:stone", {
 	groups = { stone = 1, solid = 1 }
 })
 
-NODE_SHAPES.register_shapes_set("th_overworld:stone")
+NodeShapes.register_shapes_set("th_overworld:stone", {
+	{ type = "slab" },
+	{ type = "panel" },
+	{ type = "stairs" },
+	{ type = "pillar" },
+	{ type = "thin_pillar" },
+	{ type = "post" },
+	{ type = "wall" },
+	{ type = "fence_flat" }
+})

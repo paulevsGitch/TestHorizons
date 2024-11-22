@@ -247,205 +247,261 @@ local function after_break_thin_pillar(pos, oldnode, oldmetadata, digger)
 	end
 end
 
---
---node_shapes.register_pillar = function (node_name, overrides)
---	local def = table.copy(core.registered_nodes[node_name])
---	apply_overrides(def, overrides)
---	if not def.groups then def.groups = {} end
---	def.groups.pillar = 1
---
---	def.description = def.description .. " [" .. DESC_PILLAR .. "]"
---	def.paramtype2 = "wallmounted"
---	def.on_place = place_pillar
---
---	core.register_node(node_name .. "_pillar", def)
---end
---
---node_shapes.register_thin_pillar = function(node_name, overrides)
---	local def = table.copy(core.registered_nodes[node_name])
---	local tex_pref = string.gsub(node_name, ":", "_") .. "_pillar"
---
---	apply_overrides(def, overrides)
---	if not def.groups then def.groups = {} end
---	def.groups.thin_pillar = 1
---	
---	def.description = def.description .. " [" .. DESC_THIN_PILLAR .. "]"
---	def.paramtype2 = "facedir"
---	def.paramtype = "light"
---	def.drawtype = "mesh"
---	
---	def.on_place = place_thin_pillar
---	def.after_dig_node = after_break_thin_pillar
---	
---	local pillar = node_name .. "_thin_pillar"
---	def.drop = pillar
---	
---	def.mesh = "node_shapes_thin_pillar_small.obj"
---	def.tiles = {tex_pref .. "_ends.png", tex_pref .. "_top.png"}
---	def.selection_box = PILLAR_BOX_SMALL
---	def.collision_box = PILLAR_BOX_SMALL
---	core.register_node(pillar, def)
---	
---	def = table.copy(def)
---	def.groups.not_in_creative_inventory = 1
---	def.selection_box = PILLAR_BOX_BOTTOM
---	def.collision_box = PILLAR_BOX_BOTTOM
---	def.mesh = "node_shapes_thin_pillar_bottom.obj"
---	def.tiles = {tex_pref .. "_ends.png", tex_pref .. "_top.png", tex_pref .. "_middle.png"}
---	core.register_node(pillar .. "_bottom", def)
---	
---	def = table.copy(def)
---	def.mesh = "node_shapes_thin_pillar_top.obj"
---	def.selection_box = PILLAR_BOX_TOP
---	def.collision_box = PILLAR_BOX_TOP
---	core.register_node(pillar .. "_top", def)
---	
---	def = table.copy(def)
---	def.selection_box = PILLAR_BOX_MIDDLE
---	def.collision_box = PILLAR_BOX_MIDDLE
---	def.mesh = "node_shapes_thin_pillar_middle.obj"
---	def.tiles = {tex_pref .. "_middle.png"}
---	core.register_node(pillar .. "_middle", def)
---end
---
---node_shapes.register_variants = function(node_name)
---	node_shapes.register_slab(node_name)
---	node_shapes.register_stairs(node_name)
---	local prefix = string.gsub(node_name, ":", "_")
---	local side = prefix .. "_pillar_side.png"
---	local top = prefix .. "_pillar_top.png"
---	node_shapes.register_pillar(node_name, {
---		tiles = {top, top, side}
---	})
---	node_shapes.register_thin_pillar(node_name, {
---		tiles = {top, top, side}
---	})
---end
-
--- local DESC_SLAB = translate("Slab")
--- local DESC_STAIRS = translate("Stairs")
--- local DESC_PILLAR = translate("Pillar")
--- local DESC_THIN_PILLAR = translate("Thin Pillar")
-
 local SHAPES = {
 	{
-		name_suffix = "_slab",
-		description_suffix = " [" .. translate("Slab") .. "]",
-		definition = {
-			drawtype = "nodebox",
-			node_box = {
-				type = "fixed",
-				fixed = { -0.5, -0.5, -0.5, 0.5, 0.0, 0.5 }
-			},
-			paramtype2 = "wallmounted",
-			paramtype = "light",
-			on_place = place_slab,
-			groups = { slab = 1 }
+		type = "slab",
+		nodes = {
+			{
+				suffix = "_slab",
+				description_suffix = " [" .. translate("Slab") .. "]",
+				world_align_texture = true,
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "fixed",
+						fixed = { -0.5, -0.5, -0.5, 0.5, 0.0, 0.5 }
+					},
+					paramtype2 = "wallmounted",
+					paramtype = "light",
+					on_place = place_slab,
+					groups = { slab = 1 }
+				}
+			}
 		}
 	},
 	{
-		name_suffix = "_panel",
-		description_suffix = " [" .. translate("Panel") .. "]",
-		definition = {
-			drawtype = "nodebox",
-			node_box = {
-				type = "fixed",
-				fixed = { -0.5, -0.5, -0.5, 0.5, -0.25, 0.5 }
-			},
-			paramtype2 = "wallmounted",
-			paramtype = "light",
-			on_place = place_slab,
-			groups = { slab = 1 }
+		type = "panel",
+		nodes = {
+			{
+				suffix = "_panel",
+				description_suffix = " [" .. translate("Panel") .. "]",
+				world_align_texture = true,
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "fixed",
+						fixed = { -0.5, -0.5, -0.5, 0.5, -0.25, 0.5 }
+					},
+					paramtype2 = "wallmounted",
+					paramtype = "light",
+					on_place = place_slab,
+					groups = { slab = 1 }
+				}
+			}
 		}
 	},
 	{
-		name_suffix = "_stairs",
-		description_suffix = " [" .. translate("Stairs") .. "]",
-		definition = {
-			drawtype = "nodebox",
-			node_box = {
-				type = "fixed",
-				fixed = {
-					{-0.5, -0.5, -0.5, 0.5, 0.0, 0.5},
-					{-0.5, 0.0, 0.0, 0.5, 0.5, 0.5}
+		type = "stairs",
+		nodes = {
+			{
+				suffix = "_stairs",
+				description_suffix = " [" .. translate("Stairs") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "fixed",
+						fixed = {
+							{-0.5, -0.5, -0.5, 0.5, 0.0, 0.5},
+							{-0.5, 0.0, 0.0, 0.5, 0.5, 0.5}
+						}
+					},
+					paramtype2 = "facedir",
+					paramtype = "light",
+					on_place = place_stairs,
+					groups = { stairs = 1 }
+				}
+			}
+		}
+	},
+	{
+		type = "pillar",
+		nodes = {
+			{
+				suffix = "_pillar",
+				description_suffix = " [" .. translate("Pillar") .. "]",
+				tile_suffix = { "_pillar_top", "_pillar_top", "_pillar_side" },
+				definition = {
+					paramtype2 = "wallmounted",
+					on_place = place_pillar,
+					groups = { pillar = 1, solid = 1 }
+				}
+			}
+		}
+	},
+	{
+		type = "thin_pillar",
+		nodes = {
+			{
+				suffix = "_thin_pillar_small",
+				description_suffix = " [" .. translate("Thin Pillar") .. "]",
+				tile_suffix = { "_thin_pillar_ends", "_thin_pillar_top" },
+				definition = {
+					drawtype = "mesh",
+					mesh = "th_node_shapes_thin_pillar_small.obj",
+					paramtype2 = "facedir",
+					paramtype = "light",
+					on_place = place_thin_pillar,
+					after_dig_node = after_break_thin_pillar,
+					groups = { thin_pillar = 1 },
+					selection_box = PILLAR_BOX_SMALL,
+					collision_box = PILLAR_BOX_SMALL
 				}
 			},
-			paramtype2 = "facedir",
-			paramtype = "light",
-			on_place = place_stairs,
-			groups = { stairs = 1 }
+			{
+				suffix = "_thin_pillar_bottom",
+				description_suffix = " [" .. translate("Thin Pillar") .. "]",
+				tile_suffix = { "_thin_pillar_ends", "_thin_pillar_top", "_thin_pillar_middle" },
+				drop = "_thin_pillar_small",
+				definition = {
+					drawtype = "mesh",
+					mesh = "th_node_shapes_thin_pillar_bottom.obj",
+					paramtype2 = "facedir",
+					paramtype = "light",
+					on_place = place_thin_pillar,
+					after_dig_node = after_break_thin_pillar,
+					groups = { thin_pillar = 1, not_in_creative_inventory = 1 },
+					selection_box = PILLAR_BOX_BOTTOM,
+					collision_box = PILLAR_BOX_BOTTOM
+				}
+			},
+			{
+				suffix = "_thin_pillar_middle",
+				description_suffix = " [" .. translate("Thin Pillar") .. "]",
+				tile_suffix = { "_thin_pillar_middle" },
+				drop = "_thin_pillar_small",
+				definition = {
+					drawtype = "mesh",
+					mesh = "th_node_shapes_thin_pillar_middle.obj",
+					paramtype2 = "facedir",
+					paramtype = "light",
+					on_place = place_thin_pillar,
+					after_dig_node = after_break_thin_pillar,
+					groups = { thin_pillar = 1, not_in_creative_inventory = 1 },
+					selection_box = PILLAR_BOX_MIDDLE,
+					collision_box = PILLAR_BOX_MIDDLE
+				}
+			},
+			{
+				suffix = "_thin_pillar_top",
+				description_suffix = " [" .. translate("Thin Pillar") .. "]",
+				tile_suffix = { "_thin_pillar_ends", "_thin_pillar_top", "_thin_pillar_middle" },
+				drop = "_thin_pillar_small",
+				definition = {
+					drawtype = "mesh",
+					mesh = "th_node_shapes_thin_pillar_top.obj",
+					paramtype2 = "facedir",
+					paramtype = "light",
+					on_place = place_thin_pillar,
+					after_dig_node = after_break_thin_pillar,
+					groups = { thin_pillar = 1, not_in_creative_inventory = 1 },
+					selection_box = PILLAR_BOX_TOP,
+					collision_box = PILLAR_BOX_TOP
+				}
+			}
 		}
 	},
 	{
-		name_suffix = "_pillar",
-		description_suffix = " [" .. translate("Pillar") .. "]",
-		definition = {
-			paramtype2 = "wallmounted",
-			on_place = place_pillar,
-			groups = { pillar = 1, solid = 1 }
+		type = "post",
+		nodes = {
+			{
+				suffix = "_post",
+				description_suffix = " [" .. translate("Post") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "fixed",
+						fixed = { -0.25, -0.5, -0.25, 0.25, 0.5, 0.25 }
+					},
+					paramtype = "light",
+					paramtype2 = "wallmounted",
+					on_place = place_pillar,
+					groups = { post = 1 }
+				}
+			}
 		}
 	},
 	{
-		name_suffix = "_thin_pillar_small",
-		description_suffix = " [" .. translate("Thin Pillar") .. "]",
-		definition = {
-			drawtype = "mesh",
-			mesh = "th_node_shapes_thin_pillar_small.obj",
-			paramtype2 = "facedir",
-			paramtype = "light",
-			on_place = place_thin_pillar,
-			after_dig_node = after_break_thin_pillar,
-			groups = { thin_pillar = 1 },
-			selection_box = PILLAR_BOX_SMALL,
-			collision_box = PILLAR_BOX_SMALL
+		type = "wall",
+		nodes = {
+			{
+				suffix = "_wall",
+				description_suffix = " [" .. translate("Wall") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "connected",
+						fixed = { -0.25, -0.501, -0.25, 0.25, 0.499, 0.25 },
+						connect_front = { -0.25, -0.501, -0.75, 0.25, 0.499, -0.25 },
+						connect_back = { -0.25, -0.501, 0.25, 0.25, 0.499, 0.75 },
+						connect_left = { -0.75, -0.501, -0.25, -0.25, 0.499, 0.25 },
+						connect_right = { 0.25, -0.501, -0.25, 0.75, 0.499, 0.25 }
+					},
+					paramtype = "light",
+					groups = { wall = 1 },
+					connects_to = { "group:solid", "group:wall", "group:pillar", "group:thin_pillar", "group:post" },
+					connect_sides = { "front", "left", "back", "right" },
+				}
+			}
 		}
 	},
 	{
-		name_suffix = "_thin_pillar_bottom",
-		description_suffix = " [" .. translate("Thin Pillar") .. "]",
-		drop = "_thin_pillar_small",
-		definition = {
-			drawtype = "mesh",
-			mesh = "th_node_shapes_thin_pillar_bottom.obj",
-			paramtype2 = "facedir",
-			paramtype = "light",
-			on_place = place_thin_pillar,
-			after_dig_node = after_break_thin_pillar,
-			groups = { thin_pillar = 1, not_in_creative_inventory = 1 },
-			selection_box = PILLAR_BOX_BOTTOM,
-			collision_box = PILLAR_BOX_BOTTOM
+		type = "fence_flat",
+		nodes = {
+			{
+				suffix = "_fence_flat",
+				description_suffix = " [" .. translate("Fence Flat") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "connected",
+						fixed = { -0.125, -0.5, -0.125, 0.125, 0.5, 0.125 },
+						connect_front = { -0.0625, -0.5, -0.5, 0.0625, 0.5, -0.125 },
+						connect_back = { -0.0625, -0.5, 0.125, 0.0625, 0.5, 0.5 },
+						connect_left = { -0.5, -0.5, -0.0625, -0.125, 0.5, 0.0625 },
+						connect_right = { 0.125, -0.5, -0.0625, 0.5, 0.5, 0.0625 }
+					},
+					paramtype = "light",
+					groups = { fence = 1 },
+					connects_to = { "group:solid", "group:fence", "group:pillar", "group:thin_pillar", "group:post" },
+					connect_sides = { "front", "left", "back", "right" },
+				}
+			}
 		}
 	},
 	{
-		name_suffix = "_thin_pillar_middle",
-		description_suffix = " [" .. translate("Thin Pillar") .. "]",
-		drop = "_thin_pillar_small",
-		definition = {
-			drawtype = "mesh",
-			mesh = "th_node_shapes_thin_pillar_middle.obj",
-			paramtype2 = "facedir",
-			paramtype = "light",
-			on_place = place_thin_pillar,
-			after_dig_node = after_break_thin_pillar,
-			groups = { thin_pillar = 1, not_in_creative_inventory = 1 },
-			selection_box = PILLAR_BOX_MIDDLE,
-			collision_box = PILLAR_BOX_MIDDLE
-		}
-	},
-	{
-		name_suffix = "_thin_pillar_top",
-		description_suffix = " [" .. translate("Thin Pillar") .. "]",
-		drop = "_thin_pillar_small",
-		definition = {
-			drawtype = "mesh",
-			mesh = "th_node_shapes_thin_pillar_top.obj",
-			paramtype2 = "facedir",
-			paramtype = "light",
-			on_place = place_thin_pillar,
-			after_dig_node = after_break_thin_pillar,
-			groups = { thin_pillar = 1, not_in_creative_inventory = 1 },
-			selection_box = PILLAR_BOX_TOP,
-			collision_box = PILLAR_BOX_TOP
+		type = "fence_decorative",
+		nodes = {
+			{
+				suffix = "_fence_decorative",
+				description_suffix = " [" .. translate("Fence Decorative") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "connected",
+						fixed = { -0.125, -0.5, -0.125, 0.125, 0.5, 0.125 },
+						connect_front = {
+							{ -0.0625, 0.25, -0.5, 0.0625, 0.4375, -0.125 },
+							{ -0.0625, -0.125, -0.5, 0.0625, 0.0625, -0.125 }
+						},
+						connect_back = {
+							{ -0.0625, 0.25, 0.125, 0.0625, 0.4375, 0.5 },
+							{ -0.0625, -0.125, 0.125, 0.0625, 0.0625, 0.5 }
+						},
+						connect_left = {
+							{ -0.5, 0.25, -0.0625, -0.125, 0.4375, 0.0625 },
+							{ -0.5, -0.125, -0.0625, -0.125, 0.0625, 0.0625 }
+						},
+						connect_right = {
+							{ 0.125, 0.25, -0.0625, 0.5, 0.4375, 0.0625 },
+							{ 0.125, -0.125, -0.0625, 0.5, 0.0625, 0.0625 }
+						}
+					},
+					paramtype = "light",
+					groups = { fence = 1 },
+					connects_to = { "group:solid", "group:fence", "group:pillar", "group:thin_pillar", "group:post" },
+					connect_sides = { "front", "left", "back", "right" },
+				}
+			}
 		}
 	}
 }
@@ -461,26 +517,69 @@ local function fix_tile_def(tiles)
 	end
 end
 
-NODE_SHAPES.PROTECTED.register_nodes = function(source_node, shape_list)
+NodeShapes.protected.register_nodes = function(source_node, shape_list)
 	local src_def = core.registered_nodes[source_node]
 	local node_list = {}
 	table.insert(node_list, source_node)
 
 	for _, shape in ipairs(SHAPES) do
-		local node_name = source_node .. shape.name_suffix
-		local node_def = table.copy(src_def)
-		table.merge_into(node_def, shape.definition)
-		fix_tile_def(node_def.tiles)
+		for __, shape_def in ipairs(shape_list) do
+			if shape.type ~= shape_def.type then
+				goto shape_break
+			end
 
-		node_def.description = node_def.description .. shape.description_suffix
-		if shape.drop then
-			node_def.drop = source_node .. shape.drop
-		end
+			for _, node in ipairs(shape.nodes) do
+				local node_name = source_node .. node.suffix
+				local node_def = table.copy(src_def)
+				table.merge_into(node_def, node.definition)
 
-		core.register_node(":" .. node_name, node_def)
-		
-		if not node_def.groups or not node_def.groups.not_in_creative_inventory then
-			table.insert(node_list, node_name)
+				if node_def.groups then
+					node_def.groups.solid = nil
+				end
+
+				if node.drop then
+					node_def.drop = source_node .. node.drop
+				end
+
+				if node.world_align_texture then
+					fix_tile_def(node_def.tiles)
+				end
+
+				if node.tile_suffix then
+					local tile_texture
+					local pos
+
+					if not node_def.tiles then
+						node_def.tiles = {}
+						pos = string.match(source_node, ":") or 0
+						tile_texture = string.sub(source_node, pos + 1) .. ".png"
+					else
+						tile_texture = node_def.tiles[1]
+						if type(tile_texture) == "table" then
+							tile_texture = tile_texture.name
+						end
+					end
+					
+					for index, suffix in ipairs(node.tile_suffix) do
+						pos = string.match(tile_texture, ".*()%.") or 0
+						node_def.tiles[index] = string.sub(tile_texture, 1, pos - 1) .. suffix .. string.sub(tile_texture, pos)
+					end
+				end
+
+				node_def.description = node_def.description .. node.description_suffix
+
+				if shape_def.overrides then
+					table.merge_into(node_def, shape_def.overrides)
+				end
+
+				core.register_node(":" .. node_name, node_def)
+				
+				if not node_def.groups or not node_def.groups.not_in_creative_inventory then
+					table.insert(node_list, node_name)
+				end
+			end
+
+			::shape_break::
 		end
 	end
 

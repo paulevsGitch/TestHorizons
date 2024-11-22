@@ -1,16 +1,47 @@
-local make_formscpec = NODE_SHAPES.PROTECTED.make_formscpec
-local show_formspec = NODE_SHAPES.PROTECTED.show_formspec
-local register_nodes = NODE_SHAPES.PROTECTED.register_nodes
+local make_formscpec = NodeShapes.protected.make_formscpec
+local show_formspec = NodeShapes.protected.show_formspec
+local register_nodes = NodeShapes.protected.register_nodes
 
--- Register a set of shapes for node with radial meny to select them
-NODE_SHAPES.register_shapes_set = function(source_node)
-	local node_list = register_nodes(source_node)
+local SUFFIX = "\n" .. core.colorize("#00FF33", NodeShapes.protected.translate("Press Aux1 to change shape"))
+local FORMSPEC_DATA = {}
+
+---@param source_node string Source node ID to copy parameters from.
+---@param shapes table Shapes list where each shape is in format `{type: string, overrides: table (not required)}`.
+--
+-- Register a set of shapes for the node with radial meny to select them.
+--
+-- **Available shape types:**
+-- - "slab" - half cube node, can be placed on all 6 sides
+-- - "panel" - quart cube node, can be placed on all 6 sides
+-- - "stairs" - 2 connected cuboids node, can be placed on all 6 sides
+-- - "pillar" - full cube node with rotations
+-- - "thin_pillar" - thin decorative cube node with rotations
+-- - "post" - thin cube node with rotations
+-- - "wall" - thin cube node with connection to neigbours or solids
+-- - "fence_flat" - very thin cube node with flat connection to neigbours or solids
+-- - "fence_decorative" - very thin cube node with two small connection to neigbours or solids
+NodeShapes.register_shapes_set = function(source_node, shapes)
+	local node_list = register_nodes(source_node, shapes)
 	for _, node_name in ipairs(node_list) do
-		local formspec = make_formscpec(node_name, node_list)
+		FORMSPEC_DATA[node_name] = {
+			node_list = node_list,
+			formspec = make_formscpec(node_name, node_list)
+		}
+		local description = minetest.registered_items[node_name].description
 		core.override_item(node_name, {
-			on_use = function(stack, player, pointed_thing)
-				show_formspec(player, node_list, formspec)
-			end
+			description = description .. SUFFIX
 		})
 	end
 end
+
+minetest.register_globalstep(function(dtime)
+	for _, player in ipairs(minetest.get_connected_players()) do
+		local controls = player:get_player_control()
+		if controls.aux1 then
+			local data = FORMSPEC_DATA[player:get_wielded_item():get_name()]
+			if data then
+				show_formspec(player, data.node_list, data.formspec)
+			end
+		end
+	end
+end)

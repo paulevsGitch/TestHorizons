@@ -1,7 +1,7 @@
 local RADIAL_MENU_ID = "th_node_shapes:menu"
 local PLAYER_SELECTED = {}
 
-function NODE_SHAPES.PROTECTED.make_formscpec(selected_node, node_list)
+function NodeShapes.protected.make_formscpec(selected_node, node_list)
 	local formspec_table = {
 		"formspec_version[7]",
 		"size[10,8]",
@@ -27,7 +27,7 @@ function NODE_SHAPES.PROTECTED.make_formscpec(selected_node, node_list)
 	return table.concat(formspec_table)
 end
 
-function NODE_SHAPES.PROTECTED.show_formspec(player, node_list, formspec)
+function NodeShapes.protected.show_formspec(player, node_list, formspec)
 	PLAYER_SELECTED[player:get_player_name()] = node_list
 	core.show_formspec(player:get_player_name(), RADIAL_MENU_ID, formspec)
 end
