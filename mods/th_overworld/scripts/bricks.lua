@@ -13,4 +13,5 @@ local function register_bricks(name)
 end
 
 register_bricks("bricks")
+register_bricks("large_bricks")
 register_bricks("stone_bricks")
