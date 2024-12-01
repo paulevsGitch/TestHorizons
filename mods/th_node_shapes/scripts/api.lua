@@ -34,9 +34,9 @@ NodeShapes.register_shapes_set = function(source_node, shapes)
 	end
 end
 
--- Register a pre-defined set of shapes for the stone-like node with radial meny to select them.
+--- Register a pre-defined set of shapes for the stone-like node with radial meny to select them.
 ---@param source_node string Source node ID to copy parameters from.
-NodeShapes.register_stone_set = function(source_node)
+NodeShapes.register_fancy_stone_set = function(source_node)
 	NodeShapes.register_shapes_set(source_node, {
 		{ type = "slab" },
 		{ type = "panel" },
@@ -47,6 +47,16 @@ NodeShapes.register_stone_set = function(source_node)
 		{ type = "wall" },
 		{ type = "fence_flat" },
 		{ type = "frame" }
+	})
+end
+
+--- Register a pre-defined set of shapes for the stone-like node with radial meny to select them.
+---@param source_node string Source node ID to copy parameters from.
+NodeShapes.register_simple_stone_set = function(source_node)
+	NodeShapes.register_shapes_set(source_node, {
+		{ type = "slab" },
+		{ type = "panel" },
+		{ type = "stairs" }
 	})
 end
 

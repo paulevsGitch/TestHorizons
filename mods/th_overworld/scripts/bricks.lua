@@ -9,9 +9,11 @@ local function register_bricks(name)
 		groups = { bricks = 1, solid = 1 }
 	})
 	
-	NodeShapes.register_stone_set(node_name)
+	NodeShapes.register_fancy_stone_set(node_name)
 end
 
 register_bricks("bricks")
 register_bricks("large_bricks")
 register_bricks("stone_bricks")
+register_bricks("sandstone_bricks")
+register_bricks("dark_sandstone_bricks")
