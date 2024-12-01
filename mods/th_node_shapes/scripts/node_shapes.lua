@@ -2,36 +2,60 @@ local translate = core.get_translator("th_node_shapes")
 
 local PILLAR_BOX_MIDDLE = {
 	type = "fixed",
-	fixed = {-0.3125, -0.5, -0.3125, 0.3125, 0.5, 0.3125}
+	fixed = { -0.3125, -0.5, -0.3125, 0.3125, 0.5, 0.3125 }
 }
 
 local PILLAR_BOX_TOP = {
 	type = "fixed",
 	fixed = {
-		{-0.3125, -0.5, -0.3125, 0.3125, 0.45, 0.3125},
-		{-0.4375, 0.3125, -0.4375, 0.4375, 0.5, 0.4375},
-		{-0.375, 0.125, -0.375, 0.375, 0.3125, 0.375}
+		{ -0.3125, -0.5, -0.3125, 0.3125, 0.45, 0.3125 },
+		{ -0.4375, 0.3125, -0.4375, 0.4375, 0.5, 0.4375 },
+		{ -0.375, 0.125, -0.375, 0.375, 0.3125, 0.375 }
 	}
 }
 
 local PILLAR_BOX_BOTTOM = {
 	type = "fixed",
 	fixed = {
-		{-0.3125, -0.45, -0.3125, 0.3125, 0.5, 0.3125},
-		{-0.4375, -0.3125, -0.4375, 0.4375, -0.5, 0.4375},
-		{-0.375, -0.125, -0.375, 0.375, -0.3125, 0.375}
+		{ -0.3125, -0.45, -0.3125, 0.3125, 0.5, 0.3125 },
+		{ -0.4375, -0.3125, -0.4375, 0.4375, -0.5, 0.4375 },
+		{ -0.375, -0.125, -0.375, 0.375, -0.3125, 0.375 }
 	}
 }
 
 local PILLAR_BOX_SMALL = {
 	type = "fixed",
 	fixed = {
-		{-0.3125, -0.45, -0.3125, 0.3125, 0.45, 0.3125},
-		{-0.4375, 0.3125, -0.4375, 0.4375, 0.5, 0.4375},
-		{-0.375, 0.125, -0.375, 0.375, 0.3125, 0.375},
-		{-0.4375, -0.3125, -0.4375, 0.4375, -0.5, 0.4375},
-		{-0.375, -0.125, -0.375, 0.375, -0.3125, 0.375}
+		{ -0.3125, -0.45, -0.3125, 0.3125, 0.45, 0.3125 },
+		{ -0.4375, 0.3125, -0.4375, 0.4375, 0.5, 0.4375 },
+		{ -0.375, 0.125, -0.375, 0.375, 0.3125, 0.375 },
+		{ -0.4375, -0.3125, -0.4375, 0.4375, -0.5, 0.4375 },
+		{ -0.375, -0.125, -0.375, 0.375, -0.3125, 0.375 }
 	}
+}
+
+local FENCE_COLLISION = {
+	type = "connected",
+	fixed = { -0.125, -0.5, -0.125, 0.125, 0.75, 0.125 },
+	connect_front = { -0.0625, -0.5, -0.5, 0.0625, 0.75, -0.125 },
+	connect_back = { -0.0625, -0.5, 0.125, 0.0625, 0.75, 0.5 },
+	connect_left = { -0.5, -0.5, -0.0625, -0.125, 0.75, 0.0625 },
+	connect_right = { 0.125, -0.5, -0.0625, 0.5, 0.75, 0.0625 }
+}
+
+local FRAME_X = {
+	type = "fixed",
+	fixed = { -0.125, -0.5, -0.5, 0.125, 0.5, 0.5 }
+}
+
+local FRAME_Y = {
+	type = "fixed",
+	fixed = { -0.5, -0.125, -0.5, 0.5, 0.125, 0.5 }
+}
+
+local FRAME_Z = {
+	type = "fixed",
+	fixed = { -0.5, -0.5, -0.125, 0.5, 0.5, 0.125 }
 }
 
 local STAIRS_ANGLES = { 5, 7, 11, 9 }
@@ -116,6 +140,13 @@ local function place_stairs(itemstack, placer, pointed_thing)
 		rotation = math.floor((rotation + math.pi) * 2.0 / math.pi)
 		rotation = bit.band(rotation + 1, 3) + 1
 		index = STAIRS_ANGLES[rotation]
+	end
+
+	if not placer:get_player_control().sneak then
+		local node = core.get_node(pointed_thing.under)
+		if core.get_node_group(node.name, "stairs") > 0 and bit.rshift(index, 1) ~= bit.rshift(node.param2, 1) then
+			index = node.param2
+		end
 	end
 	
 	return core.item_place(itemstack, placer, pointed_thing, index)
@@ -247,6 +278,37 @@ local function after_break_thin_pillar(pos, oldnode, oldmetadata, digger)
 	end
 end
 
+local function place_frame(itemstack, placer, pointed_thing)
+	local dir = placer:get_look_dir()
+
+	local ax = math.abs(dir.x)
+	local ay = math.abs(dir.y)
+	local az = math.abs(dir.z)
+	local mx = math.max(ax, math.max(ay, az));
+	
+	local suffix = "z"
+	if mx == ax then
+		suffix = "x"
+	elseif mx == ay then
+		suffix = "y"
+	end
+
+	if not placer:get_player_control().sneak then
+		local node = core.get_node(pointed_thing.under)
+		if core.get_item_group(node.name, "frame") > 0 then
+			suffix = string.sub(node.name, -1)
+		end
+	end
+
+	local node_name = itemstack:get_name()
+	local place_name = string.sub(node_name, 1, -2) .. suffix
+	itemstack:set_name(place_name)
+
+	local result = core.item_place(itemstack, placer, pointed_thing)
+	itemstack:set_name(node_name)
+	return result
+end
+
 local SHAPES = {
 	{
 		type = "slab",
@@ -296,6 +358,7 @@ local SHAPES = {
 			{
 				suffix = "_stairs",
 				description_suffix = " [" .. translate("Stairs") .. "]",
+				world_align_texture = true,
 				definition = {
 					drawtype = "nodebox",
 					node_box = {
@@ -436,9 +499,17 @@ local SHAPES = {
 						connect_left = { -0.75, -0.501, -0.25, -0.25, 0.499, 0.25 },
 						connect_right = { 0.25, -0.501, -0.25, 0.75, 0.499, 0.25 }
 					},
+					collision_box = {
+						type = "connected",
+						fixed = { -0.25, -0.5, -0.25, 0.25, 0.75, 0.25 },
+						connect_front = { -0.25, -0.5, -0.5, 0.25, 0.75, -0.25 },
+						connect_back = { -0.25, -0.5, 0.25, 0.25, 0.75, 0.5 },
+						connect_left = { -0.5, -0.5, -0.25, -0.25, 0.75, 0.25 },
+						connect_right = { 0.25, -0.5, -0.25, 0.5, 0.75, 0.25 }
+					},
 					paramtype = "light",
 					groups = { wall = 1 },
-					connects_to = { "group:solid", "group:wall", "group:pillar", "group:thin_pillar", "group:post" },
+					connects_to = { "group:solid", "group:wall", "group:fence", "group:pillar", "group:thin_pillar", "group:post" },
 					connect_sides = { "front", "left", "back", "right" },
 				}
 			}
@@ -460,9 +531,10 @@ local SHAPES = {
 						connect_left = { -0.5, -0.5, -0.0625, -0.125, 0.5, 0.0625 },
 						connect_right = { 0.125, -0.5, -0.0625, 0.5, 0.5, 0.0625 }
 					},
+					collision_box = FENCE_COLLISION,
 					paramtype = "light",
 					groups = { fence = 1 },
-					connects_to = { "group:solid", "group:fence", "group:pillar", "group:thin_pillar", "group:post" },
+					connects_to = { "group:solid", "group:wall", "group:fence", "group:frame", "group:pillar" },
 					connect_sides = { "front", "left", "back", "right" },
 				}
 			}
@@ -496,10 +568,97 @@ local SHAPES = {
 							{ 0.125, -0.125, -0.0625, 0.5, 0.0625, 0.0625 }
 						}
 					},
+					collision_box = FENCE_COLLISION,
 					paramtype = "light",
 					groups = { fence = 1 },
-					connects_to = { "group:solid", "group:fence", "group:pillar", "group:thin_pillar", "group:post" },
+					connects_to = { "group:solid", "group:wall", "group:fence", "group:frame", "group:pillar" },
 					connect_sides = { "front", "left", "back", "right" },
+				}
+			}
+		}
+	},
+	{
+		type = "frame",
+		nodes = {
+			{
+				suffix = "_frame_x",
+				description_suffix = " [" .. translate("Frame") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "connected",
+						fixed = {
+							{ -0.0625, 0.1875, -0.5, 0.0625, 0.3125, 0.5 },
+							{ -0.0625, -0.3125, -0.5, 0.0625, -0.1875, 0.5 },
+							{ -0.0625, -0.5, 0.1875, 0.0625, 0.5, 0.3125 },
+							{ -0.0625, -0.5, -0.3125, 0.0625, 0.5, -0.1875 }
+						},
+						disconnected_front = { -0.125, -0.5, -0.5, 0.125, 0.5, -0.375 },
+						disconnected_back = { -0.125, -0.5, 0.375, 0.125, 0.5, 0.5 },
+						disconnected_top = { -0.125, 0.375, -0.5, 0.125, 0.5, 0.5 },
+						disconnected_bottom = { -0.125, -0.5, -0.5, 0.125, -0.375, 0.5 }
+					},
+					paramtype = "light",
+					groups = { frame = 1, frame_x = 1 },
+					connects_to = { "group:frame_x" },
+					connect_sides = { "up", "down", "front", "back" },
+					on_place = place_frame,
+					collision_box = FRAME_X,
+					selection_box = FRAME_X
+				}
+			},
+			{
+				suffix = "_frame_y",
+				description_suffix = " [" .. translate("Frame") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "connected",
+						fixed = {
+							{ 0.1875, -0.0625, -0.5, 0.3125, 0.0625, 0.5 },
+							{ -0.3125, -0.0625, -0.5, -0.1875, 0.0625, 0.5 },
+							{ -0.5, -0.0625, 0.1875, 0.5, 0.0625, 0.3125 },
+							{ -0.5, -0.0625, -0.3125, 0.5, 0.0625, -0.1875 }
+						},
+						disconnected_front = { -0.5, -0.125, -0.5, 0.5, 0.125, -0.375 },
+						disconnected_back = { -0.5, -0.125, 0.375, 0.5, 0.125, 0.5 },
+						disconnected_right = { 0.375, -0.125, -0.5, 0.5, 0.125, 0.5 },
+						disconnected_left = { -0.5, -0.125, -0.5, -0.375, 0.125, 0.5 }
+					},
+					paramtype = "light",
+					groups = { frame = 1, frame_y = 1, not_in_creative_inventory = 1 },
+					connects_to = { "group:frame_y" },
+					connect_sides = {  "left", "right", "front", "back" },
+					on_place = place_frame,
+					collision_box = FRAME_Y,
+					selection_box = FRAME_Y
+				}
+			},
+			{
+				suffix = "_frame_z",
+				description_suffix = " [" .. translate("Frame") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "connected",
+						fixed = {
+							{ -0.5, 0.1875, -0.0625, 0.5, 0.3125, 0.0625 },
+							{ -0.5, -0.3125, -0.0625, 0.5, -0.1875, 0.0625 },
+							{ 0.1875, -0.5, -0.0625, 0.3125, 0.5, 0.0625 },
+							{ -0.3125, -0.5, -0.0625, -0.1875, 0.5, 0.0625 }
+						},
+						disconnected_left = { -0.5, -0.5, -0.125, -0.375, 0.5, 0.125 },
+						disconnected_right = { 0.375, -0.5, -0.125, 0.5, 0.5, 0.125 },
+						disconnected_top = { -0.5, 0.375, -0.125, 0.5, 0.5, 0.125 },
+						disconnected_bottom = { -0.5, -0.5, -0.125, 0.5, -0.375, 0.125 }
+					},
+					paramtype = "light",
+					groups = { frame = 1, frame_z = 1, not_in_creative_inventory = 1 },
+					connects_to = { "group:frame_z" },
+					connect_sides = { "up", "down", "left", "right" },
+					on_place = place_frame,
+					collision_box = FRAME_Z,
+					selection_box = FRAME_Z
 				}
 			}
 		}
@@ -547,12 +706,10 @@ NodeShapes.protected.register_nodes = function(source_node, shape_list)
 
 				if node.tile_suffix then
 					local tile_texture
-					local pos
 
 					if not node_def.tiles then
 						node_def.tiles = {}
-						pos = string.match(source_node, ":") or 0
-						tile_texture = string.sub(source_node, pos + 1) .. ".png"
+						tile_texture = string.match(source_node, "%:(.*)$") .. ".png"
 					else
 						tile_texture = node_def.tiles[1]
 						if type(tile_texture) == "table" then
@@ -561,7 +718,7 @@ NodeShapes.protected.register_nodes = function(source_node, shape_list)
 					end
 					
 					for index, suffix in ipairs(node.tile_suffix) do
-						pos = string.match(tile_texture, ".*()%.") or 0
+						local pos = string.match(tile_texture, ".*()%.") or 1
 						node_def.tiles[index] = string.sub(tile_texture, 1, pos - 1) .. suffix .. string.sub(tile_texture, pos)
 					end
 				end

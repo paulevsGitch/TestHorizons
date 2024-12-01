@@ -5,4 +5,5 @@ THOverworld.translate = core.get_translator("th_overworld")
 
 dofile(path .. "/scripts/stones.lua")
 dofile(path .. "/scripts/fluids.lua")
+dofile(path .. "/scripts/bricks.lua")
 dofile(path .. "/scripts/world.lua")

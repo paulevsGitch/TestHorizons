@@ -17,6 +17,9 @@ local function fill_vector(pos, x, y, z)
 	random3(pos, pos)
 end
 
+---Constructs a new Perlin noise table.
+---@param seed number Numeric seed value, same seed will produce identical noise at the same positions.
+---@return table Perlin Constructed Perlin noise table.
 Perlin.new = function(seed)
 	local noise = {}
 	local lastPos = vector.new(-640000, -640000, -640000)

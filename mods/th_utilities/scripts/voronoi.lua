@@ -16,6 +16,11 @@ Voronoi.new = function(seed)
 		values[i] = {x = 0.0, y = 0.0}
 	end
 
+	local offset = {}
+	random2(seed, seed * 3.0, offset)
+	offset.x = offset.x * 65536
+	offset.y = offset.y * 65536
+
 	noise.get_2d = function(x, y)
 		local ix = math.floor(x)
 		local iy = math.floor(y)
@@ -27,7 +32,7 @@ Voronoi.new = function(seed)
 				local px = (i % 3) - 1
 				local py = math.floor(i / 3) - 1
 				local pos = values[i + 1]
-				random2(px + ix, py + iy, pos)
+				random2(px + ix + offset.x, py + iy + offset.y, pos)
 				pos.x = pos.x + px
 				pos.y = pos.y + py
 			end
