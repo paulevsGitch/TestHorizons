@@ -7,7 +7,7 @@ local function register_pillar_cactus(name)
         drawtype = "nodebox",
 		node_box = {
 			type = "fixed",
-			fixed = { -0.25, -0.5, -0.25, 0.25, 0.5, 0.25 }
+			fixed = { -0.25, -0.75, -0.25, 0.25, 0.25, 0.25 }
 		},
 		description = translate(string.snake_to_title(name)),
 		tiles = {"th_" .. name .. ".png"},
