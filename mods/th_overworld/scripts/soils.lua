@@ -6,7 +6,7 @@ local function register_falling(name)
 	core.register_node(node_name, {
 		description = translate(string.snake_to_title(name)),
 		tiles = {"th_" .. name .. ".png"},
-		groups = { falling_node = 1, solid = 1 }
+		groups = { falling_node = 1, solid = 1, soil = 1 }
 	})
 	
 	NodeShapes.register_layers_set(node_name)
