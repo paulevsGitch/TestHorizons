@@ -662,6 +662,50 @@ local SHAPES = {
 				}
 			}
 		}
+	},
+	{
+		type = "layer",
+		nodes = {
+			{
+				suffix = "_layer_0",
+				description_suffix = " [" .. translate("Layer") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "fixed",
+						fixed = { -0.5, -0.5, -0.5, 0.5, -0.25, 0.5 }
+					},
+					paramtype = "light",
+					groups = { layer = 1 },
+				}
+			},
+			{
+				suffix = "_layer_1",
+				description_suffix = " [" .. translate("Layer") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "fixed",
+						fixed = { -0.5, -0.5, -0.5, 0.5, 0.0, 0.5 }
+					},
+					paramtype = "light",
+					groups = { layer = 1 },
+				}
+			},
+			{
+				suffix = "_layer_2",
+				description_suffix = " [" .. translate("Layer") .. "]",
+				definition = {
+					drawtype = "nodebox",
+					node_box = {
+						type = "fixed",
+						fixed = { -0.5, -0.5, -0.5, 0.5, 0.25, 0.5 }
+					},
+					paramtype = "light",
+					groups = { layer = 1 },
+				}
+			}
+		}
 	}
 }
 

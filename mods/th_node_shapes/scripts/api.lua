@@ -60,6 +60,14 @@ NodeShapes.register_simple_stone_set = function(source_node)
 	})
 end
 
+--- Register a pre-defined set of shapes for the stone-like node with radial meny to select them.
+---@param source_node string Source node ID to copy parameters from.
+NodeShapes.register_layers_set = function(source_node)
+	NodeShapes.register_shapes_set(source_node, {
+		{ type = "layer" }
+	})
+end
+
 minetest.register_globalstep(function(dtime)
 	for _, player in ipairs(minetest.get_connected_players()) do
 		local controls = player:get_player_control()
