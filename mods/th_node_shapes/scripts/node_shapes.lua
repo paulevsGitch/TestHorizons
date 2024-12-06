@@ -1,5 +1,7 @@
 local translate = core.get_translator("th_node_shapes")
 
+local UNDERLINE = "\n" .. core.colorize("#00FF33", translate("Press Aux1 to change shape"))
+
 local PILLAR_BOX_MIDDLE = {
 	type = "fixed",
 	fixed = { -0.3125, -0.5, -0.3125, 0.3125, 0.5, 0.3125 }
@@ -310,6 +312,16 @@ local function place_frame(itemstack, placer, pointed_thing)
 end
 
 local SHAPES = {
+	{
+		type = "cube",
+		nodes = {
+			{
+				suffix = "",--"_cube",
+				description_suffix = " [" .. translate("Cube") .. "]",
+				world_align_texture = true
+			}
+		}
+	},
 	{
 		type = "slab",
 		nodes = {
@@ -720,10 +732,13 @@ local function fix_tile_def(tiles)
 	end
 end
 
-NodeShapes.protected.register_nodes = function(source_node, shape_list)
-	local src_def = core.registered_nodes[source_node]
+---Register a list of shapes (with registering nodes) with specified parameters.
+---@param base_name string Base name (prefix) for node.
+---@param base_def table Base definition table.
+---@param shape_list table An array of shapes to register.
+---@return table array An array of registered node names.
+NodeShapes.protected.register_nodes = function(base_name, base_def, shape_list)
 	local node_list = {}
-	table.insert(node_list, source_node)
 
 	for _, shape in ipairs(SHAPES) do
 		for __, shape_def in ipairs(shape_list) do
@@ -732,16 +747,19 @@ NodeShapes.protected.register_nodes = function(source_node, shape_list)
 			end
 
 			for _, node in ipairs(shape.nodes) do
-				local node_name = source_node .. node.suffix
-				local node_def = table.copy(src_def)
-				table.merge_into(node_def, node.definition)
+				local node_name = base_name .. node.suffix
+				local node_def = table.copy(base_def)
+
+				if node.definition then
+					table.merge_into(node_def, node.definition)
+				end
 
 				if node_def.groups then
 					node_def.groups.solid = nil
 				end
 
 				if node.drop then
-					node_def.drop = source_node .. node.drop
+					node_def.drop = node_name .. node.drop
 				end
 
 				if node.world_align_texture then
@@ -753,7 +771,7 @@ NodeShapes.protected.register_nodes = function(source_node, shape_list)
 
 					if not node_def.tiles then
 						node_def.tiles = {}
-						tile_texture = string.match(source_node, "%:(.*)$") .. ".png"
+						tile_texture = string.match(node_name, "%:(.*)$") .. ".png"
 					else
 						tile_texture = node_def.tiles[1]
 						if type(tile_texture) == "table" then
@@ -767,7 +785,7 @@ NodeShapes.protected.register_nodes = function(source_node, shape_list)
 					end
 				end
 
-				node_def.description = node_def.description .. node.description_suffix
+				node_def.description = node_def.description .. node.description_suffix .. UNDERLINE
 
 				if shape_def.overrides then
 					table.merge_into(node_def, shape_def.overrides)

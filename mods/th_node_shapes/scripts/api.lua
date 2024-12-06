@@ -2,12 +2,12 @@ local make_formscpec = NodeShapes.protected.make_formscpec
 local show_formspec = NodeShapes.protected.show_formspec
 local register_nodes = NodeShapes.protected.register_nodes
 
-local SUFFIX = "\n" .. core.colorize("#00FF33", NodeShapes.protected.translate("Press Aux1 to change shape"))
 local FORMSPEC_DATA = {}
 
 --- Register a set of shapes for the node with radial meny to select them.
----@param source_node string Source node ID to copy parameters from.
----@param shapes table Shapes list where each shape is in format `{type: string, overrides: table (not required)}`.
+---@param base_name string Base node name (ID) for node registration.
+---@param base_def table Source node properties to copy parameters from.
+---@param shape_list table Shapes array where each shape is in format `{type: string, overrides: table (not required)}`.
 ---
 --- **Available shape types:**
 --- - "slab" - half cube node, can be placed on all 6 sides
@@ -20,24 +20,22 @@ local FORMSPEC_DATA = {}
 --- - "fence_flat" - very thin cube node with flat connection to neigbours or solids
 --- - "fence_decorative" - very thin cube node with two small connection to neigbours or solids
 --- - "frame" - square frame with borders to other nodes, has 3 directions
-NodeShapes.register_shapes_set = function(source_node, shapes)
-	local node_list = register_nodes(source_node, shapes)
+NodeShapes.register_shapes_set = function(base_name, base_def, shape_list)
+	local node_list = register_nodes(base_name, base_def, shape_list)
 	for _, node_name in ipairs(node_list) do
 		FORMSPEC_DATA[node_name] = {
 			node_list = node_list,
 			formspec = make_formscpec(node_name, node_list)
 		}
-		local description = minetest.registered_items[node_name].description
-		core.override_item(node_name, {
-			description = description .. SUFFIX
-		})
 	end
 end
 
 --- Register a pre-defined set of shapes for the stone-like node with radial meny to select them.
----@param source_node string Source node ID to copy parameters from.
-NodeShapes.register_fancy_stone_set = function(source_node)
-	NodeShapes.register_shapes_set(source_node, {
+---@param base_name string Base node name (ID) for node registration.
+---@param base_def table Source node properties to copy parameters from.
+NodeShapes.register_fancy_stone_set = function(base_name, base_def)
+	NodeShapes.register_shapes_set(base_name, base_def, {
+		{ type = "cube" },
 		{ type = "slab" },
 		{ type = "panel" },
 		{ type = "stairs" },
@@ -51,19 +49,23 @@ NodeShapes.register_fancy_stone_set = function(source_node)
 end
 
 --- Register a pre-defined set of shapes for the stone-like node with radial meny to select them.
----@param source_node string Source node ID to copy parameters from.
-NodeShapes.register_simple_stone_set = function(source_node)
-	NodeShapes.register_shapes_set(source_node, {
+---@param base_name string Base node name (ID) for node registration.
+---@param base_def table Source node properties to copy parameters from.
+NodeShapes.register_simple_stone_set = function(base_name, base_def)
+	NodeShapes.register_shapes_set(base_name, base_def, {
+		{ type = "cube" },
 		{ type = "slab" },
 		{ type = "panel" },
 		{ type = "stairs" }
 	})
 end
 
---- Register a pre-defined set of shapes for the stone-like node with radial meny to select them.
----@param source_node string Source node ID to copy parameters from.
-NodeShapes.register_layers_set = function(source_node)
-	NodeShapes.register_shapes_set(source_node, {
+--- Register a pre-defined set of shapes (layers) for the sand-like node with radial meny to select them.
+---@param base_name string Base node name (ID) for node registration.
+---@param base_def table Source node properties to copy parameters from.
+NodeShapes.register_layers_set = function(base_name, base_def)
+	NodeShapes.register_shapes_set(base_name, base_def, {
+		{ type = "cube" },
 		{ type = "layer" }
 	})
 end
