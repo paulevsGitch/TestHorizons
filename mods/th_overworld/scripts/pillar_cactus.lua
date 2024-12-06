@@ -13,7 +13,7 @@ local function register_pillar_cactus(name)
 		description = translate(string.snake_to_title(name)),
 		tiles = {"th_" .. name .. ".png"},
         paramtype = "light",
-		groups = { plant = 1, soil = 1 }
+		groups = { plant = 1 }
 	})
 end
 
