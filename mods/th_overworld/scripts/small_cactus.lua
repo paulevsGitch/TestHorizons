@@ -5,6 +5,7 @@ local function register_small_cactus(name)
 
 	core.register_node(node_name, {
         drawtype = "plantlike",
+		on_place = PlacementRules.sand_requirement,
 		description = translate(string.snake_to_title(name)),
 		tiles = {"th_" .. name .. ".png"},
         paramtype = "light",

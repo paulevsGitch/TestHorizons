@@ -9,6 +9,7 @@ local function register_pillar_cactus(name)
 			type = "fixed",
 			fixed = { -0.25, -0.75, -0.25, 0.25, 0.25, 0.25 }
 		},
+        on_place = PlacementRules.sand_requirement,
 		description = translate(string.snake_to_title(name)),
 		tiles = {"th_" .. name .. ".png"},
         paramtype = "light",
