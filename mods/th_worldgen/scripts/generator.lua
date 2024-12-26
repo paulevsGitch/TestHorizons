@@ -152,8 +152,11 @@ local function interpolate_cell(cell, x, y, z)
 end
 
 local function generate_terrain()
+	local air_id = core.get_content_id("air")
 	local stone_id = core.get_content_id("th_overworld:stone")
 	local water_id = core.get_content_id("th_overworld:water_source")
+	local soil_id = core.get_content_id("th_overworld:soil")
+	local soil_with_grass_id = core.get_content_id("th_overworld:soil_with_grass")
 
 	for _, index in ipairs(index_table) do
 		local index_dec = index - 1
@@ -169,6 +172,17 @@ local function generate_terrain()
 			node_data[index] = stone_id
 		elseif y + emin.y < 0 then
 			node_data[index] = water_id
+		end
+
+		if node_data[index] == air_id then
+			local below = index - 3 * array_side_dy
+			if node_data[below] == stone_id then
+				node_data[below] = soil_id
+			end
+			below = index - array_side_dy
+			if node_data[below] == stone_id then
+				node_data[below] = soil_with_grass_id
+			end
 		end
 	end
 end
