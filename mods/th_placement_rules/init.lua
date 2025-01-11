@@ -1,6 +1,4 @@
-PlacementRules = {
-	"th_placement_rules"
-}
+PlacementRules = {}
 
 --- A node with this rule can only be placed on soil of quality 1 or above.
 --- Function is named after sand as an example of quality 1 soil.
@@ -28,5 +26,3 @@ PlacementRules.farmland_requirement = function (itemstack, placer, pointed_thing
 		return core.item_place(itemstack, placer, pointed_thing)
 	end
 end
-
-PlacementRules.protected = nil
