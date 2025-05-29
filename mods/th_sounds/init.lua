@@ -1,3 +1,7 @@
+local global_step_time = 0.0
+local player_steps = {}
+local last_dig_time = 0.0
+
 local function play_sound(name, pos)
 	local gain = math.random() * 0.2 + 0.9
 	local pitch = math.random() * 0.4 + 0.8
@@ -11,28 +15,23 @@ end
 
 core.register_on_placenode(function(pos, newnode, placer, oldnode, itemstack, pointed_thing)
 	local def = core.registered_nodes[newnode.name]
-	if not def._node_sounds then return end
+	if not def or not def._node_sounds then return end
 	if def._node_sounds.place then play_sound(def._node_sounds.place, pos)
 		play_sound(def._node_sounds.place, pos)
 	end
 end)
 
-local last_time = 0.0
-
 core.register_on_punchnode(function(pos, node, puncher, pointed_thing)
 	local time = os.clock()
-	if time < last_time then return end
-	last_time = time + 0.1
+	if time < last_dig_time then return end
+	last_dig_time = time + 0.1
 
 	local def = core.registered_nodes[node.name]
-	if not def._node_sounds then return end
+	if not def or not def._node_sounds then return end
 	if def._node_sounds.dig then
 		play_sound(def._node_sounds.dig, pos)
 	end
 end)
-
-local global_step_time = 0.0
-local player_steps = {}
 
 core.register_on_joinplayer(function(player, last_login)
 	player_steps[player:get_player_name()] = {
@@ -86,7 +85,7 @@ core.register_globalstep(function(dtime)
 		else
 			--local entity = obj:get_luaentity()
 			--if entity then
-			--	minetest.chat_send_all(dump(entity))
+			--	core.chat_send_all(dump(entity))
 			--end
 		end
 

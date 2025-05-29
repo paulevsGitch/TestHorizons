@@ -22,7 +22,7 @@ local texture_flowing = {
 	}
 }
 
-minetest.register_node("th_overworld:water_source", {
+core.register_node("th_overworld:water_source", {
 	description = translate("Water Source"),
 	drawtype = "liquid",
 	paramtype2 = "flowingliquid",
@@ -46,7 +46,7 @@ minetest.register_node("th_overworld:water_source", {
 	post_effect_color = {a = 103, r = 30, g = 60, b = 90}
 })
 
-minetest.register_node("th_overworld:water_flowing", {
+core.register_node("th_overworld:water_flowing", {
 	description = translate("Flowing Water"),
 	drawtype = "flowingliquid",
 	waving = 3,

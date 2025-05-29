@@ -70,8 +70,8 @@ NodeShapes.register_layers_set = function(base_name, base_def)
 	})
 end
 
-minetest.register_globalstep(function(dtime)
-	for _, player in ipairs(minetest.get_connected_players()) do
+core.register_globalstep(function(dtime)
+	for _, player in ipairs(core.get_connected_players()) do
 		local controls = player:get_player_control()
 		if controls.aux1 then
 			local data = FORMSPEC_DATA[player:get_wielded_item():get_name()]

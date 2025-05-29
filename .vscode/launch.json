@@ -4,8 +4,8 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Run Minetest",
-			"runtimeExecutable": "D:/Games/minetest-5.10.0-win64/bin/minetest.exe"
+			"name": "Run Luanti",
+			"runtimeExecutable": "D:/Games/luanti-5.12.0-win64/bin/luanti.exe"
 		}
 	]
 }

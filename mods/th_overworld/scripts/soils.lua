@@ -3,7 +3,7 @@ local translate = THOverworld.translate
 local function register_falling(name)
 	NodeShapes.register_layers_set("th_overworld:" .. name, {
 		description = translate(string.snake_to_title(name)),
-		tiles = {"th_" .. name .. ".png"},
+		tiles = { "th_" .. name .. ".png" },
 		groups = { falling_node = 1, solid = 1, soil = 1 }
 	})
 end
@@ -11,7 +11,7 @@ end
 local function register_soil(name)
 	NodeShapes.register_shapes_set("th_overworld:" .. name, {
 		description = translate(string.snake_to_title(name)),
-		tiles = {"th_" .. name .. ".png"},
+		tiles = { "th_" .. name .. ".png" },
 		groups = { solid = 1, soil = 2 }
 	}, {
 		{ type = "cube" },
@@ -20,7 +20,7 @@ local function register_soil(name)
 end
 
 local function register_grass(name, color)
-	minetest.register_node("th_overworld:" .. name .. "_with_grass", {
+	core.register_node("th_overworld:" .. name .. "_with_grass", {
 		description = translate(string.snake_to_title(name) .. " With Grass"),
 		tiles = {
 			"th_grass_top.png",
