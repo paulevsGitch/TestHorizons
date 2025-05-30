@@ -20,3 +20,17 @@ THOverworld.sounds.gravel = {
 	place = { name = "th_gravel_step" },
 	footstep = { name = "th_gravel_step" }
 }
+
+THOverworld.sounds.sand = {
+	dig = { name = "th_sand_step" },
+	dug = { name = "th_sand_step" },
+	place = { name = "th_sand_step" },
+	footstep = { name = "th_sand_step" }
+}
+
+THOverworld.sounds.soil = {
+	dig = { name = "th_soil_step" },
+	dug = { name = "th_soil_step" },
+	place = { name = "th_soil_step" },
+	footstep = { name = "th_soil_step" }
+}

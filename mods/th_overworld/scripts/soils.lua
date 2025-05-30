@@ -46,7 +46,8 @@ local function register_soil(name)
 	NodeShapes.register_shapes_set("th_overworld:" .. name, {
 		description = translate(string.snake_to_title(name)),
 		tiles = { "th_" .. name .. ".png" },
-		groups = { solid = 1, soil = 2 }
+		groups = { solid = 1, soil = 2 },
+		_node_sounds = THOverworld.sounds.soil
 	}, {
 		{ type = "cube" },
 		{ type = "slab" }
@@ -64,10 +65,11 @@ local function register_grass(name, color)
 		overlay_tiles = { "", "", "th_grass_side.png" },
 		groups = { solid = 1, soil = 2 },
 		color = color,
+		_node_sounds = THOverworld.sounds.soil
 	})
 end
 
-register_falling("sand")
+register_falling("sand", THOverworld.sounds.sand)
 register_falling("gravel", THOverworld.sounds.gravel)
 register_soil("soil")
 register_grass("soil", "#aee170")

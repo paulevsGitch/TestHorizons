@@ -57,7 +57,7 @@ core.register_globalstep(function(dtime)
 						local world_def = core.registered_nodes[world_node.name]
 						buildable_to = world_def and world_def.buildable_to
 					end
-
+					
 					if not buildable_to then
 						entity:set_properties({ is_visible = false })
 						goto break_loop
