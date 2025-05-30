@@ -1,4 +1,7 @@
-local path = core.get_modpath("th_utilities")
+local mod_name = core.get_current_modname()
+local path = core.get_modpath(mod_name)
+
+THUtilities = {}
 
 local scripts = {
 	path .. "/scripts/tables.lua",

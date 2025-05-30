@@ -41,7 +41,7 @@ core.register_globalstep(function(dtime)
 		local node = { name = name, param2 = 0 }
 
 		if def then
-			local range = (def.range or 4.0) * 2.0
+			local range = def.range or 4.0
 			local start_pos = vector.add(player_pos, player:get_eye_offset())
 			start_pos.y = start_pos.y + (player:get_properties().eye_height or 0.0)
 			local end_pos = vector.add(start_pos, vector.multiply(player:get_look_dir(), range))
@@ -59,7 +59,6 @@ core.register_globalstep(function(dtime)
 					end
 					
 					if not buildable_to then
-						entity:set_properties({ is_visible = false })
 						goto break_loop
 					end
 
@@ -71,16 +70,16 @@ core.register_globalstep(function(dtime)
 						node.param2 = def.place_param2
 					end
 
-					entity:set_properties({
-						is_visible = visible,
-						node = node
-					})
-
 					goto break_loop
 				end
 			end
 
 			::break_loop::
+
+			entity:set_properties({
+				is_visible = visible,
+				node = node
+			})
 		else
 			entity:set_properties({
 				is_visible = false,

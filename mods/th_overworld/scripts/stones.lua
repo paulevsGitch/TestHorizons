@@ -1,4 +1,4 @@
-local translate = THOverworld.translate
+local translate = THOverworld.protected.translate
 
 local function register_stone(name)
 	NodeShapes.register_simple_stone_set("th_overworld:" .. name, {

@@ -1,4 +1,4 @@
-local translate = THOverworld.translate
+local translate = THOverworld.protected.translate
 
 local function register_bricks(name, sounds)
 	NodeShapes.register_fancy_stone_set("th_overworld:" .. name, {

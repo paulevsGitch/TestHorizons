@@ -1,10 +1,11 @@
+local mod_name = core.get_current_modname()
+local path = core.get_modpath(mod_name)
+
 NodeShapes = {
 	protected = {
-		translate = core.get_translator("th_node_shapes")
+		translate = core.get_translator(mod_name)
 	}
 }
-
-local path = core.get_modpath("th_node_shapes")
 
 dofile(path .. "/scripts/node_shapes.lua")
 dofile(path .. "/scripts/gui.lua")

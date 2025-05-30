@@ -1,4 +1,4 @@
-local translate = THOverworld.translate
+local translate = THOverworld.protected.translate
 
 local texture_source = {
 	name = "th_water.png",

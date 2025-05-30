@@ -1,6 +1,7 @@
-THWorldgen = {}
+local mod_name = core.get_current_modname()
+local path = core.get_modpath(mod_name)
 
-local path = core.get_modpath("th_worldgen")
+THWorldgen = {}
 
 dofile(path .. "/scripts/layers.lua")
 core.register_mapgen_script(path .. "/scripts/generator.lua")

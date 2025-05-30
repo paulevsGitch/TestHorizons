@@ -1,4 +1,4 @@
-local translate = THOverworld.translate
+local translate = THOverworld.protected.translate
 
 core.register_node("th_overworld:small_cactus", {
 	drawtype = "plantlike",

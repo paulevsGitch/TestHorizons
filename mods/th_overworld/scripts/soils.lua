@@ -1,4 +1,4 @@
-local translate = THOverworld.translate
+local translate = THOverworld.protected.translate
 
 local function register_falling(name, sounds)
 	local check_name = "th_overworld:" .. name .. "_layer"
@@ -65,7 +65,7 @@ local function register_grass(name, color)
 		overlay_tiles = { "", "", "th_grass_side.png" },
 		groups = { solid = 1, soil = 2 },
 		color = color,
-		_node_sounds = THOverworld.sounds.soil
+		_node_sounds = THOverworld.sounds.grass
 	})
 end
 

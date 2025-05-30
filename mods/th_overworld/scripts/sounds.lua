@@ -34,3 +34,10 @@ THOverworld.sounds.soil = {
 	place = { name = "th_soil_step" },
 	footstep = { name = "th_soil_step" }
 }
+
+THOverworld.sounds.grass = {
+	dig = { name = "th_soil_step" },
+	dug = { name = "th_soil_step" },
+	place = { name = "th_soil_step" },
+	footstep = { name = "th_grass_step" }
+}
