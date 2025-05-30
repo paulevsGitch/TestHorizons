@@ -221,7 +221,7 @@ local function update_thin_pillar(x, y, z)
 	
 	if name ~= node.name then
 		node.name = name
-		core.set_node(PILLAR_POS, node)
+		core.swap_node(PILLAR_POS, node)
 	end
 end
 
@@ -749,7 +749,7 @@ local SHAPES = {
 						fixed = { -0.5, -0.5, -0.5, 0.5, 0.0, 0.5 }
 					},
 					paramtype = "light",
-					groups = { layer = 1 },
+					groups = { layer = 2 },
 				}
 			},
 			{
@@ -762,7 +762,7 @@ local SHAPES = {
 						fixed = { -0.5, -0.5, -0.5, 0.5, 0.25, 0.5 }
 					},
 					paramtype = "light",
-					groups = { layer = 1 },
+					groups = { layer = 3 },
 				}
 			}
 		}
@@ -798,12 +798,12 @@ NodeShapes.protected.register_nodes = function(base_name, base_def, shape_list)
 				local node_name = base_name .. node.suffix
 				local node_def = table.copy(base_def)
 
-				if node.definition then
-					table.merge_into(node_def, node.definition)
+				if shape.type ~= "cube" and node_def.groups then
+					node_def.groups.solid = nil
 				end
 
-				if node_def.groups then
-					node_def.groups.solid = nil
+				if node.definition then
+					table.merge_into(node_def, node.definition)
 				end
 
 				if node.drop then
