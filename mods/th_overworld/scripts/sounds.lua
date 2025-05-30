@@ -13,3 +13,10 @@ THOverworld.sounds.bricks = {
 	place = { name = "th_bricks_hit" },
 	footstep = { name = "th_bricks_step" }
 }
+
+THOverworld.sounds.gravel = {
+	dig = { name = "th_gravel_step" },
+	dug = { name = "th_gravel_step" },
+	place = { name = "th_gravel_step" },
+	footstep = { name = "th_gravel_step" }
+}

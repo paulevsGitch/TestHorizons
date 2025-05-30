@@ -65,6 +65,8 @@ local STAIRS_ANGLES = { 5, 7, 11, 9 }
 local MUTABLE_POS = vector.zero()
 local PILLAR_POS = vector.zero()
 
+local MUTABLE_NODE = { name = "air", param2 = 0 }
+
 -- 0 = y+,   1 = z+,   2 = z-,   3 = x+,   4 = x-,   5 = y-
 local function simple_facedir(dir)
 	if dir.x == 1 then
@@ -82,24 +84,28 @@ local function simple_facedir(dir)
 	end
 end
 
-local function get_slab_param2(placer, pointed_thing)
+local function get_slab_place_state(itemstack, placer, pointed_thing)
 	local dir = vector.subtract(pointed_thing.under, pointed_thing.above)
 	local param2 = core.dir_to_wallmounted(dir)
+
 	if not placer:get_player_control().sneak then
 		local node = core.get_node(pointed_thing.under)
 		if core.get_node_group(node.name, "slab") > 0 and bit.rshift(param2, 1) ~= bit.rshift(node.param2, 1) then
 			param2 = node.param2
 		end
 	end
-	return param2
+
+	MUTABLE_NODE.name = itemstack:get_name()
+	MUTABLE_NODE.param2 = param2
+	return MUTABLE_NODE
 end
 
 local function place_slab(itemstack, placer, pointed_thing)
-	local param2 = get_slab_param2(placer, pointed_thing)
-	return core.item_place(itemstack, placer, pointed_thing, param2)
+	local state = get_slab_place_state(itemstack, placer, pointed_thing)
+	return core.item_place(itemstack, placer, pointed_thing, state.param2)
 end
 
-local function get_stairs_param2(placer, pointed_thing)
+local function get_stairs_place_state(itemstack, placer, pointed_thing)
 	local dir = vector.subtract(pointed_thing.under, pointed_thing.above)
 	local vec = placer:get_look_dir()
 	
@@ -155,25 +161,29 @@ local function get_stairs_param2(placer, pointed_thing)
 			param2 = node.param2
 		end
 	end
-	
-	return param2
+
+	MUTABLE_NODE.name = itemstack:get_name()
+	MUTABLE_NODE.param2 = param2
+	return MUTABLE_NODE
 end
 
 local function place_stairs(itemstack, placer, pointed_thing)
-	local param2 = get_stairs_param2(placer, pointed_thing)
-	return core.item_place(itemstack, placer, pointed_thing, param2)
+	local state = get_stairs_place_state(itemstack, placer, pointed_thing)
+	return core.item_place(itemstack, placer, pointed_thing, state.param2)
 end
 
-local function get_pillar_param2(placer, pointed_thing)
+local function get_pillar_place_state(itemstack, placer, pointed_thing)
 	local dir = vector.subtract(pointed_thing.under, pointed_thing.above)
 	local param2 = core.dir_to_wallmounted(dir)
 	param2 = bit.bor(bit.band(param2, 6), 1)
-	return param2
+	MUTABLE_NODE.name = itemstack:get_name()
+	MUTABLE_NODE.param2 = param2
+	return MUTABLE_NODE
 end
 
 local function place_pillar(itemstack, placer, pointed_thing)
-	local param2 = get_pillar_param2(placer, pointed_thing)
-	return core.item_place(itemstack, placer, pointed_thing, param2)
+	local state = get_pillar_place_state(itemstack, placer, pointed_thing)
+	return core.item_place(itemstack, placer, pointed_thing, state.param2)
 end
 
 local function is_pillar(x, y, z, param2)
@@ -225,23 +235,7 @@ local function update_thin_pillar(x, y, z)
 	end
 end
 
-local function get_thin_pillar_param2(placer, pointed_thing)
-	local under = pointed_thing.under
-	local above = pointed_thing.above
-	local dx = above.x - under.x
-	local dz = above.z - under.z
-	local param2 = 0
-	
-	if dx ~= 0 then
-		param2 = 12
-	elseif dz ~= 0 then
-		param2 = 4
-	end
-
-	return param2
-end
-
-local function place_thin_pillar(itemstack, placer, pointed_thing)
+local function get_thin_pillar_place_state(itemstack, placer, pointed_thing)
 	local under = pointed_thing.under
 	local above = pointed_thing.above
 	
@@ -255,15 +249,15 @@ local function place_thin_pillar(itemstack, placer, pointed_thing)
 	
 	if dx ~= 0 then
 		param2 = 12
-		bottom = is_pillar(under.x - 1, under.y, under.z, param2)
-		top = is_pillar(under.x + 1, under.y, under.z, param2)
+		bottom = is_pillar(above.x - 1, above.y, above.z, param2)
+		top = is_pillar(above.x + 1, above.y, above.z, param2)
 	elseif dz ~= 0 then
 		param2 = 4
-		bottom = is_pillar(under.x, under.y, under.z - 1, param2)
-		top = is_pillar(under.x, under.y, under.z + 1, param2)
+		bottom = is_pillar(above.x, above.y, above.z - 1, param2)
+		top = is_pillar(above.x, above.y, above.z + 1, param2)
 	else
-		bottom = is_pillar(under.x, under.y - 1, under.z, param2)
-		top = is_pillar(under.x, under.y + 1, under.z, param2)
+		bottom = is_pillar(above.x, above.y - 1, above.z, param2)
+		top = is_pillar(above.x, above.y + 1, above.z, param2)
 	end
 	
 	local place_name = node_name.sub(node_name, 1, string.find(node_name, "_thin_pillar", 1, true) + 11)
@@ -278,10 +272,23 @@ local function place_thin_pillar(itemstack, placer, pointed_thing)
 		place_name = place_name .. "_small"
 	end
 
-	itemstack:set_name(place_name)
-	local result = core.item_place_node(itemstack, placer, pointed_thing, param2)
+	MUTABLE_NODE.name = place_name
+	MUTABLE_NODE.param2 = param2
+	return MUTABLE_NODE
+end
+
+local function place_thin_pillar(itemstack, placer, pointed_thing)
+	local state = get_thin_pillar_place_state(itemstack, placer, pointed_thing)
+	local node_name = itemstack:get_name()
+	itemstack:set_name(state.name)
+	local result = core.item_place_node(itemstack, placer, pointed_thing, state.param2)
 	itemstack:set_name(node_name)
 	
+	local under = pointed_thing.under
+	local above = pointed_thing.above
+	local dx = above.x - under.x
+	local dz = above.z - under.z
+
 	update_thin_pillar(above.x, above.y, above.z)
 	
 	if dx ~= 0 then
@@ -311,12 +318,7 @@ local function after_break_thin_pillar(pos, oldnode, oldmetadata, digger)
 	end
 end
 
-local function get_frame_param2(placer, pointed_thing)
-	local dir = placer:get_look_dir()
-	return core.dir_to_facedir(dir, true)
-end
-
-local function place_frame(itemstack, placer, pointed_thing)
+local function get_frame_place_state(itemstack, placer, pointed_thing)
 	local dir = placer:get_look_dir()
 
 	local ax = math.abs(dir.x)
@@ -338,10 +340,15 @@ local function place_frame(itemstack, placer, pointed_thing)
 		end
 	end
 
-	local node_name = itemstack:get_name()
-	local place_name = string.sub(node_name, 1, -2) .. suffix
-	itemstack:set_name(place_name)
+	MUTABLE_NODE.name = string.sub(itemstack:get_name(), 1, -2) .. suffix
+	MUTABLE_NODE.param2 = 0
+	return MUTABLE_NODE
+end
 
+local function place_frame(itemstack, placer, pointed_thing)
+	local state = get_frame_place_state(itemstack, placer, pointed_thing)
+	local node_name = itemstack:get_name()
+	itemstack:set_name(state.name)
 	local result = core.item_place(itemstack, placer, pointed_thing)
 	itemstack:set_name(node_name)
 	return result
@@ -375,7 +382,7 @@ local SHAPES = {
 					paramtype = "light",
 					on_place = place_slab,
 					groups = { slab = 1 },
-					_get_place_param2 = get_slab_param2
+					_get_place_preview = get_slab_place_state
 				}
 			}
 		}
@@ -397,7 +404,7 @@ local SHAPES = {
 					paramtype = "light",
 					on_place = place_slab,
 					groups = { slab = 1 },
-					_get_place_param2 = get_slab_param2
+					_get_place_preview = get_slab_place_state
 				}
 			}
 		}
@@ -422,7 +429,7 @@ local SHAPES = {
 					paramtype = "light",
 					on_place = place_stairs,
 					groups = { stairs = 1 },
-					_get_place_param2 = get_stairs_param2
+					_get_place_preview = get_stairs_place_state
 				}
 			}
 		}
@@ -438,7 +445,7 @@ local SHAPES = {
 					paramtype2 = "wallmounted",
 					on_place = place_pillar,
 					groups = { pillar = 1, solid = 1 },
-					_get_place_param2 = get_pillar_param2
+					_get_place_preview = get_pillar_place_state
 				}
 			}
 		}
@@ -460,7 +467,7 @@ local SHAPES = {
 					groups = { thin_pillar = 1 },
 					selection_box = PILLAR_BOX_SMALL,
 					collision_box = PILLAR_BOX_SMALL,
-					_get_place_param2 = get_thin_pillar_param2
+					_get_place_preview = get_thin_pillar_place_state
 				}
 			},
 			{
@@ -478,7 +485,7 @@ local SHAPES = {
 					groups = { thin_pillar = 1, not_in_creative_inventory = 1 },
 					selection_box = PILLAR_BOX_BOTTOM,
 					collision_box = PILLAR_BOX_BOTTOM,
-					_get_place_param2 = get_thin_pillar_param2
+					_get_place_preview = get_thin_pillar_place_state
 				}
 			},
 			{
@@ -496,7 +503,7 @@ local SHAPES = {
 					groups = { thin_pillar = 1, not_in_creative_inventory = 1 },
 					selection_box = PILLAR_BOX_MIDDLE,
 					collision_box = PILLAR_BOX_MIDDLE,
-					_get_place_param2 = get_thin_pillar_param2
+					_get_place_preview = get_thin_pillar_place_state
 				}
 			},
 			{
@@ -514,7 +521,7 @@ local SHAPES = {
 					groups = { thin_pillar = 1, not_in_creative_inventory = 1 },
 					selection_box = PILLAR_BOX_TOP,
 					collision_box = PILLAR_BOX_TOP,
-					_get_place_param2 = get_thin_pillar_param2
+					_get_place_preview = get_thin_pillar_place_state
 				}
 			}
 		}
@@ -535,7 +542,7 @@ local SHAPES = {
 					paramtype2 = "wallmounted",
 					on_place = place_pillar,
 					groups = { post = 1 },
-					_get_place_param2 = get_pillar_param2
+					_get_place_preview = get_pillar_place_state
 				}
 			}
 		}
@@ -567,7 +574,7 @@ local SHAPES = {
 					paramtype = "light",
 					groups = { wall = 1 },
 					connects_to = { "group:solid", "group:wall", "group:fence", "group:pillar", "group:thin_pillar", "group:post" },
-					connect_sides = { "front", "left", "back", "right" },
+					connect_sides = { "front", "left", "back", "right" }
 				}
 			}
 		}
@@ -592,7 +599,7 @@ local SHAPES = {
 					paramtype = "light",
 					groups = { fence = 1 },
 					connects_to = { "group:solid", "group:wall", "group:fence", "group:frame", "group:pillar" },
-					connect_sides = { "front", "left", "back", "right" },
+					connect_sides = { "front", "left", "back", "right" }
 				}
 			}
 		}
@@ -629,7 +636,7 @@ local SHAPES = {
 					paramtype = "light",
 					groups = { fence = 1 },
 					connects_to = { "group:solid", "group:wall", "group:fence", "group:frame", "group:pillar" },
-					connect_sides = { "front", "left", "back", "right" },
+					connect_sides = { "front", "left", "back", "right" }
 				}
 			}
 		}
@@ -662,7 +669,7 @@ local SHAPES = {
 					on_place = place_frame,
 					collision_box = FRAME_X,
 					selection_box = FRAME_X,
-					_get_place_param2 = get_frame_param2
+					_get_place_preview = get_frame_place_state
 				}
 			},
 			{
@@ -690,7 +697,7 @@ local SHAPES = {
 					on_place = place_frame,
 					collision_box = FRAME_Y,
 					selection_box = FRAME_Y,
-					_get_place_param2 = get_frame_param2
+					_get_place_preview = get_frame_place_state
 				}
 			},
 			{
@@ -718,7 +725,7 @@ local SHAPES = {
 					on_place = place_frame,
 					collision_box = FRAME_Z,
 					selection_box = FRAME_Z,
-					_get_place_param2 = get_frame_param2
+					_get_place_preview = get_frame_place_state
 				}
 			}
 		}

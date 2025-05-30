@@ -1,11 +1,12 @@
 local translate = THOverworld.translate
 
-local function register_falling(name)
+local function register_falling(name, sounds)
 	local check_name = "th_overworld:" .. name .. "_layer"
 	NodeShapes.register_layers_set("th_overworld:" .. name, {
 		description = translate(string.snake_to_title(name)),
 		tiles = { "th_" .. name .. ".png" },
 		groups = { falling_node = 1, solid = 1, soil = 1 },
+		_node_sounds = sounds,
 		on_construct = function(pos)
 			local node = core.get_node(pos)
 			local layer = core.get_item_group(node.name, "layer")
@@ -67,6 +68,6 @@ local function register_grass(name, color)
 end
 
 register_falling("sand")
-register_falling("gravel")
+register_falling("gravel", THOverworld.sounds.gravel)
 register_soil("soil")
 register_grass("soil", "#aee170")
