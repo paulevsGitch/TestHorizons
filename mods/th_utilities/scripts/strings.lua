@@ -27,3 +27,16 @@ end
 string.remove_last = function (str, count)
 	return string.sub(str, 1, string.len(str) - count)
 end
+
+---Find the last index of given pattern. Returns -1 if pattern don't exist in the string.
+---@param str string Source string.
+---@param pattern string Pattern to search.
+---@return integer
+string.last_index_of = function (str, pattern)
+	local index = string.match(str, ".*" .. pattern .. "()")
+	if index then
+		return index - 1
+	else
+		return -1
+	end
+end

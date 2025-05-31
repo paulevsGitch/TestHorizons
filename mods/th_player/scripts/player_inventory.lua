@@ -1,7 +1,7 @@
 local SURVIVAL_FORMSPEC = UILibrary.formspec_builder.start()
 	.set_size(9, 4)
 	.list("current_player", "main", 0, 0, 9, 3, 9) -- main inventory
-	.list("current_player", "main", 0, 3.25, 9, 1, 0) -- hotbar
+	.list("current_player", "main", 0, 3.25, 9, 1) -- hotbar
 	.build()
 
 core.register_on_joinplayer(function(player, last_login)
