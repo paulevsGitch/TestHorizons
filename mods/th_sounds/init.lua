@@ -21,15 +21,30 @@ core.register_on_placenode(function(pos, newnode, placer, oldnode, itemstack, po
 	end
 end)
 
-core.register_on_punchnode(function(pos, node, puncher, pointed_thing)
+core.register_on_punchnode(function(pos, node, player, pointed_thing)
 	local time = os.clock()
 	if time < last_dig_time then return end
 	last_dig_time = time + 0.1
 
 	local def = core.registered_nodes[node.name]
 	if not def or not def._node_sounds then return end
-	if def._node_sounds.dig then
-		play_sound(def._node_sounds.dig, pos)
+
+	local sound = def._node_sounds.dig
+	if core.is_creative_enabled(player:get_player_name()) then
+		sound = def._node_sounds.dug
+	end
+
+	if sound then
+		play_sound(sound, pos)
+	end
+end)
+
+core.register_on_dignode(function(pos, node, digger)
+	core.chat_send_all(node.name)
+	local def = core.registered_nodes[node.name]
+	if not def or not def._node_sounds then return end
+	if def._node_sounds.dug then
+		play_sound(def._node_sounds.dug, pos)
 	end
 end)
 

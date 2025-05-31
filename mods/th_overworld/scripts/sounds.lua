@@ -41,3 +41,10 @@ THOverworld.sounds.grass = {
 	place = { name = "th_soil_step" },
 	footstep = { name = "th_grass_step" }
 }
+
+THOverworld.sounds.glass = {
+	dig = { name = "th_glass_hit" },
+	dug = { name = "th_glass_break" },
+	place = { name = "th_glass_hit" },
+	footstep = { name = "th_glass_step" }
+}
