@@ -7,6 +7,7 @@ local function register_stone(name)
 		groups = { stone = 1, solid = 1 },
 		_node_sounds = THOverworld.sounds.stone
 	})
+	THCreative.add_item("stone", "th_overworld:" .. name)
 end
 
 register_stone("stone")

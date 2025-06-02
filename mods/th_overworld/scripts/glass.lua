@@ -18,3 +18,5 @@ NodeShapes.register_shapes_set("th_overworld:glass", {
 	{ type = "panel" },
 	--{ type = "stairs" }
 })
+
+THCreative.add_item("stone", "th_overworld:glass")

@@ -7,6 +7,7 @@ local function register_bricks(name, sounds)
 		groups = { bricks = 1, solid = 1 },
 		_node_sounds = sounds
 	})
+	THCreative.add_item("stone", "th_overworld:" .. name)
 end
 
 register_bricks("bricks", THOverworld.sounds.bricks)
