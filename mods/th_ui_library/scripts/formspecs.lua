@@ -3,7 +3,10 @@ UILibrary.formspec_builder = {}
 local SLOT_SPACING = 2.0 / 18.0
 local SLOT_OFFSET = SLOT_SPACING * 0.5
 local SLOT_SIZE = 1.0 - SLOT_SPACING
-local DEF_STYLE = "style_type[list;spacing=" .. tostring(SLOT_SPACING) .. ";size=" .. tostring(SLOT_SIZE) .. "]listcolors[#0000;#41444a]style_type[button;bgcolor=#0000;hovered=#FF41444a;border=false]"
+local DEF_STYLE = "style_type[list;spacing=" .. tostring(SLOT_SPACING) .. ";size=" .. tostring(SLOT_SIZE) .. "]"
+	.. "listcolors[#0000;#41444a]"
+	.. "style_type[button;bgcolor=#0000;hovered=#FF41444a;border=false]"
+	.. "style_type[label;font_size=24]"
 
 local formspec_str = ""
 
@@ -182,6 +185,18 @@ UILibrary.formspec_builder.list_with_buttons = function (inventory_location, lis
 	return UILibrary.formspec_builder
 end
 
+---Add image to the formspec and returns builder.
+---@param x number X position inside formspec.
+---@param y number Y position inside formspec.
+---@param width number Width of the image in units.
+---@param height number Height of the image in units.
+---@param texture string Image texture.
+---@return table
+UILibrary.formspec_builder.image = function (x, y, width, height, texture)
+	formspec_str = formspec_str .. "image[" .. x .. "," .. y .. ";" .. width .. "," .. height .. ";" .. texture .. "]"
+	return UILibrary.formspec_builder
+end
+
 ---Add item image to the formspec and returns builder.
 ---@param x number X position inside formspec.
 ---@param y number Y position inside formspec.
@@ -297,9 +312,23 @@ UILibrary.formspec_builder.end_scroll_container = function ()
 end
 
 ---Set default formspec background and returns builder.
+---@param x? number X position inside formspec (Optional).
+---@param y? number Y position inside formspec (Optional).
+---@param width? number Width in units (Optional).
+---@param height? number Height in units (Optional).
 ---@return table
-UILibrary.formspec_builder.default_background = function ()
-	formspec_str = formspec_str .. "bgcolor[;neither;]background9[0,0;" .. background_size .. ";th_ui_back.png;false;12]"
+UILibrary.formspec_builder.default_background = function (x, y, width, height)
+	x = x or 0
+	y = y or 0
+	local size = background_size
+	if width and height then
+		size = tostring(width) .. "," .. tostring(height)
+	end
+
+	formspec_str = formspec_str .. "bgcolor[;neither;]background9["
+		.. tostring(x) .. "," .. tostring(y)
+		.. ";" .. size .. ";th_ui_back.png;false;12]"
+	
 	return UILibrary.formspec_builder
 end
 
@@ -309,5 +338,15 @@ end
 ---@return table
 UILibrary.formspec_builder.list_ring = function (inventory_location, list_name)
 	formspec_str = formspec_str .. "listring[" .. inventory_location .. ";" .. list_name .. "]"
+	return UILibrary.formspec_builder
+end
+
+---Add label on specified position inside formspec and returns builder.
+---@param x number X position inside formspec.
+---@param y number Y position inside formspec.
+---@param text string Label text.
+---@return table
+UILibrary.formspec_builder.label = function (x, y, text)
+	formspec_str = formspec_str .. "label[" .. tostring(x) .. "," .. tostring(y) .. ";" .. text .. "]"
 	return UILibrary.formspec_builder
 end

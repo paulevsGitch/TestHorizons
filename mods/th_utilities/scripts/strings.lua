@@ -20,6 +20,19 @@ string.starts_with = function (str, pattern)
 	return string.sub(str, 1, string.len(pattern)) == pattern
 end
 
+---Checks if string ends with pattern.
+---@param str string Source string to check.
+---@param pattern string Pattern string to check.
+---@return boolean
+string.ends_with = function (str, pattern)
+	local l1 = string.len(str)
+	local l2 = string.len(pattern)
+	if l1 < l2 then
+		return false
+	end
+	return string.sub(str, l1 - l2 + 1, l1) == pattern
+end
+
 ---Removes specified amount of last characters in string
 ---@param str string Source string to transfrom.
 ---@param count integer Amount of characters to remove.
