@@ -2,7 +2,8 @@ local translate = THOverworld.protected.translate
 
 local function register_falling(name, sounds)
 	local check_name = "th_overworld:" .. name .. "_layer"
-	NodeShapes.register_layers_set("th_overworld:" .. name, {
+	local item_id = "th_overworld:" .. name
+	NodeShapes.register_layers_set(item_id, {
 		description = translate(string.snake_to_title(name)),
 		tiles = { "th_" .. name .. ".png" },
 		groups = { falling_node = 1, solid = 1, soil = 1 },
@@ -40,9 +41,11 @@ local function register_falling(name, sounds)
 			end
 		end
 	})
+	THCreative.add_item("Soil", item_id)
 end
 
 local function register_soil(name)
+	local item_id = "th_overworld:" .. name
 	NodeShapes.register_shapes_set("th_overworld:" .. name, {
 		description = translate(string.snake_to_title(name)),
 		tiles = { "th_" .. name .. ".png" },
@@ -52,10 +55,12 @@ local function register_soil(name)
 		{ type = "cube" },
 		{ type = "slab" }
 	})
+	THCreative.add_item("Soil", item_id)
 end
 
 local function register_grass(name, color)
-	core.register_node("th_overworld:" .. name .. "_with_grass", {
+	local item_id = "th_overworld:" .. name .. "_with_grass"
+	core.register_node(item_id, {
 		description = translate(string.snake_to_title(name) .. " With Grass"),
 		tiles = {
 			"th_grass_top.png",
@@ -67,6 +72,7 @@ local function register_grass(name, color)
 		color = color,
 		_node_sounds = THOverworld.sounds.grass
 	})
+	THCreative.add_item("Soil", item_id)
 end
 
 register_falling("sand", THOverworld.sounds.sand)

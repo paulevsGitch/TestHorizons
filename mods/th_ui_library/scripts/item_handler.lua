@@ -3,7 +3,7 @@ local LIST_BUTTON_ACTIONS = {}
 
 ---Register action on button press in UI.
 ---@param button_name string Name of the button.
----@param action fun(player:table,button_name:string) Action called on button click.
+---@param action fun(player:table) Action called on button click.
 UILibrary.register_button_action = function(button_name, action)
 	local actions = BUTTON_ACTIONS[button_name]
 	if not actions then
@@ -30,7 +30,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		local actions = BUTTON_ACTIONS[button_name]
 		if actions then
 			for _, action in ipairs(actions) do
-				action(player, button_name)
+				action(player)
 			end
 		end
 		if string.find(button_name, "_button_", 0, true) then

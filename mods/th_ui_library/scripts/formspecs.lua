@@ -99,7 +99,7 @@ UILibrary.formspec_builder.list = function (inventory_location, list_name, x, y,
 	return UILibrary.formspec_builder
 end
 
----Add invisible button to the formspec and returns builder.
+---Add button to the formspec and returns builder.
 ---@param x number X position of the button in units.
 ---@param y number Y position of the button in units.
 ---@param width number Width of the button in units.
@@ -230,9 +230,11 @@ end
 ---@param width integer Width of the list, items count.
 ---@param items_id_list table Array of item Ids.
 ---@return table
-UILibrary.formspec_builder.item_button_list = function (list_name, x, y, width, items_id_list)
-	local last_index = math.ceil(#items_id_list / width) * width - 1
-	for index = 0, last_index do
+UILibrary.formspec_builder.item_button_list = function (list_name, x, y, width, items_id_list, cell_count)
+	if not cell_count then
+		cell_count = #items_id_list--math.ceil(#items_id_list / width) * width
+	end
+	for index = 0, cell_count - 1 do
 		local dy = math.floor(index / width)
 		local dx = (index - dy * width) + x
 		dy = dy + y
@@ -245,6 +247,9 @@ UILibrary.formspec_builder.item_button_list = function (list_name, x, y, width, 
 		local dx = (pos_index - dy * width) + x
 		dy = dy + y
 		pos_index = pos_index + 1
+		local button_name = list_name .. "_button_" .. tostring(pos_index)
+		local tooltip_text = core.formspec_escape(minetest.registered_items[item_id].description or "")
+		formspec_str = formspec_str .. "tooltip[" .. button_name .. ";" .. tooltip_text .. "]"
 		UILibrary.formspec_builder.button(dx, dy, 1, 1, list_name .. "_button_" .. tostring(pos_index))
 		UILibrary.formspec_builder.item_image(
 			dx + SLOT_OFFSET,
