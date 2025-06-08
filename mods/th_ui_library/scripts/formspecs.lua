@@ -7,6 +7,7 @@ local DEF_STYLE = "style_type[list;spacing=" .. tostring(SLOT_SPACING) .. ";size
 	.. "listcolors[#0000;#41444a]"
 	.. "style_type[button;bgcolor=#0000;hovered=#FF41444a;border=false]"
 	.. "style_type[label;font_size=24]"
+	.. "style_type[field;border=false]"
 
 local formspec_str = ""
 
@@ -353,5 +354,22 @@ end
 ---@return table
 UILibrary.formspec_builder.label = function (x, y, text)
 	formspec_str = formspec_str .. "label[" .. tostring(x) .. "," .. tostring(y) .. ";" .. text .. "]"
+	return UILibrary.formspec_builder
+end
+
+---Add text field to the formspec and returns builder.
+---@param x number X position inside formspec.
+---@param y number Y position inside formspec.
+---@param width number Width in units.
+---@param name string Name of the field.
+---@param default_value? string Default value in the field (Optional).
+---@return table
+UILibrary.formspec_builder.field = function (x, y, width, name, default_value)
+	default_value = default_value or ""
+	formspec_str = formspec_str .. "image[" .. tostring(x) .. "," .. tostring(y) .. ";" .. tostring(width) .. ",0.5;th_ui_input.png;4]"
+	formspec_str = formspec_str .. "field["
+		.. tostring(x + 0.0625) .. "," .. tostring(y) .. ";"
+		.. tostring(width - 0.125) .. ",0.5;" .. name .. ";;" .. default_value .. "]"
+	formspec_str = formspec_str .. "field_close_on_enter[" .. name .. ";false]"
 	return UILibrary.formspec_builder
 end
