@@ -40,7 +40,7 @@ end
 
 core.register_on_player_receive_fields(function(player, formname, fields)
 	for field_name, field_value in pairs(fields) do
-		--core.chat_send_all(field_name .. " " .. field_value)
+		--core.chat_send_all("Field: " .. field_name .. " " .. field_value)
 		local actions = BUTTON_ACTIONS[field_name]
 		if actions then
 			for _, action in ipairs(actions) do

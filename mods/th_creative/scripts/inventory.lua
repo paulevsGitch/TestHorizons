@@ -3,8 +3,10 @@ local ALL_ITEMS_NAME = translate("All Items")
 local ALL_ITEMS = { name = ALL_ITEMS_NAME, key = "All Items", items = {}, icon = "th_search_icon.png" }
 local CREATIVE_TABS = { [ALL_ITEMS_NAME] = ALL_ITEMS }
 local CREATIVE_TABS_ORDER = { ALL_ITEMS }
+local FILTERED_ITEMS = {}
 local KEY_CREATIVE_PAGE_INDEX = "creative_page_index"
 local KEY_CREATIVE_TAB_INDEX = "creative_tab_index"
+local KEY_CREATIVE_TAB_FILTER = "creative_tab_item_filter"
 local creative_pages
 
 THCreative.add_item = function (tab_name, item_id)
@@ -35,7 +37,13 @@ local function init_pages()
 	end
 end
 
-local function get_tab_formspec(page, tab_index, item_filter)
+local function get_tab_formspec(player)
+	local meta = player:get_meta()
+	local page_index = math.clamp(meta:get_int(KEY_CREATIVE_PAGE_INDEX), 1, #creative_pages)
+	local page = creative_pages[page_index]
+	local tab_index = math.clamp(meta:get_int(KEY_CREATIVE_TAB_INDEX), 1, #page)
+	local item_filter = meta:get_string(KEY_CREATIVE_TAB_FILTER)
+
 	local builder = UILibrary.formspec_builder.start(10.5, 12.75)
 	local tab = page[tab_index]
 
@@ -70,13 +78,16 @@ local function get_tab_formspec(page, tab_index, item_filter)
 	builder.field(5.25, 1.7, 4.5, "creative_tab_search", item_filter or "")
 
 	local items = tab.items
-	if item_filter then
+	if item_filter and item_filter ~= "" then
 		items = {}
 		for _, item in ipairs(tab.items) do
 			if string.find(item, item_filter, 1, true) then
 				table.insert(items, item)
 			end
 		end
+		FILTERED_ITEMS[player:get_player_name()] = items
+	else
+		FILTERED_ITEMS[player:get_player_name()] = nil
 	end
 
 	local count = math.max(81, math.ceil(#items / 9) * 9)
@@ -97,11 +108,7 @@ end
 
 THCreative.get_formspec = function (player)
 	init_pages()
-	local meta = player:get_meta()
-	local page_index = math.clamp(meta:get_int(KEY_CREATIVE_PAGE_INDEX), 1, #creative_pages)
-	local page = creative_pages[page_index]
-	local tab_index = math.clamp(meta:get_int(KEY_CREATIVE_TAB_INDEX), 1, #page)
-	return get_tab_formspec(page, tab_index)
+	return get_tab_formspec(player)
 end
 
 core.register_on_mods_loaded(function()
@@ -121,7 +128,12 @@ core.register_on_mods_loaded(function()
 end)
 
 UILibrary.register_list_button_action("All Items", function (player, button_index)
-	local item_id = ALL_ITEMS.items[button_index]
+	local items = ALL_ITEMS.items
+	local filtered = FILTERED_ITEMS[player:get_player_name()]
+	if filtered then
+		items = filtered
+	end
+	local item_id = items[button_index]
 	local inventory = player:get_inventory()
 	inventory:add_item("main", ItemStack(item_id))
 end)
@@ -130,17 +142,16 @@ for i = 1, 7 do
 	local index = i
 	UILibrary.register_button_action("button_tab_" .. tostring(index), function (player)
 		local meta = player:get_meta()
-		local page_index = math.clamp(meta:get_int(KEY_CREATIVE_PAGE_INDEX), 1, #creative_pages)
-		local page = creative_pages[page_index]
-		player:set_inventory_formspec(get_tab_formspec(page, index))
 		meta:set_int(KEY_CREATIVE_TAB_INDEX, index)
+		player:set_inventory_formspec(get_tab_formspec(player))
 	end)
 end
 
 UILibrary.register_field_action("creative_tab_search", function (player, field_value)
 	local meta = player:get_meta()
-	local page_index = math.clamp(meta:get_int(KEY_CREATIVE_PAGE_INDEX), 1, #creative_pages)
-	local page = creative_pages[page_index]
-	local tab_index = math.clamp(meta:get_int(KEY_CREATIVE_TAB_INDEX), 1, #page)
-	player:set_inventory_formspec(get_tab_formspec(page, tab_index, field_value))
+	local old_search = meta:get_string(KEY_CREATIVE_TAB_FILTER)
+	if old_search ~= field_value then
+		meta:set_string(KEY_CREATIVE_TAB_FILTER, field_value)
+		player:set_inventory_formspec(get_tab_formspec(player))
+	end
 end)
